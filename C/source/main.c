@@ -13,10 +13,10 @@ void main(void) {
 			add_record();
 		}
 		else if (!strcmp(command, "read")) {
-			file_to_db();
+			read_file();
 		}
 		else if (!strcmp(command, "write")) {
-			db_to_file();
+			write_file();
 		}
 		else if (!strcmp(command, "view")) {
 			view_record();

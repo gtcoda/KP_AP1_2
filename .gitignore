@@ -50,3 +50,12 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+/.vs
+/C/.vs/KP_AP1_2/v15
+/C/KP_AP1_2/Debug/KP_AP1_2.tlog
+/C/KP_AP1_2/*.vcxproj
+/C/*.sln
+/C/KP_AP1_2/Debug/*.log
+/C/KP_AP1_2/*.APS
+/C/KP_AP1_2/*.filters
+/C/KP_AP1_2/*.user

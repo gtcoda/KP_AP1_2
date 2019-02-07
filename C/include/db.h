@@ -29,12 +29,12 @@ typedef struct {
 
 
 
-typedef struct {
+typedef struct _record_t_l {
 	char surname[NAME_SIZE];
 	uint32_t height;
 	float weight;
-	struct record_t_l * next;
-	struct record_t_l * prev;
+	struct _record_t_l * next;
+	struct _record_t_l * prev;
 }record_t_l;
 
 

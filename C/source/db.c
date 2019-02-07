@@ -3,11 +3,11 @@
 record_db base;
 record_db_l list = {NULL,NULL};
 
-uint8_t write_db_arr(record_t note, record_db * base, rn_t * number);
-uint8_t write_db_list(record_t note, record_db_l * list, rn_t * number);
-uint8_t read_db_arr(rn_t number, record_t * note, record_db * base);
-rn_t write_db_file_arr(FILE *fp, record_db *base);
-rn_t amount_db_arr(record_db *base);
+static uint8_t write_db_arr(record_t note, record_db * base, rn_t * number);
+static uint8_t write_db_list(record_t note, record_db_l * list, rn_t * number);
+static uint8_t read_db_arr(rn_t number, record_t * note, record_db * base);
+static rn_t write_db_file_arr(FILE *fp, record_db *base);
+static rn_t amount_db_arr(record_db *base);
 
 /* ########################################### */
 

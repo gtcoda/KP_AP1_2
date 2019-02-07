@@ -33,6 +33,9 @@ void main(void) {
 		else if (!strcmp(command, "view")) {
 			view_record();
 		}
+		else if (!strcmp(command, "amount")) {
+			amount();
+		}
 		else if (!strcmp(command, "exit")) {
 			break;
 		}

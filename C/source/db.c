@@ -1,72 +1,17 @@
 #include "../include/db.h"
 
-record_db base;
+record_db_a base;
 record_db_l list = {NULL,NULL};
 
-static uint8_t write_db_arr(record_t note, record_db * base, rn_t * number);
+
+static uint8_t read_db_arr(rn_t number, record_t * note, record_db_a * base);
+static uint8_t read_db_list(rn_t number, record_t * note, record_db_l *list);
+
+static uint8_t write_db_arr(record_t note, record_db_a * base, rn_t * number);
 static uint8_t write_db_list(record_t note, record_db_l * list, rn_t * number);
-static uint8_t read_db_arr(rn_t number, record_t * note, record_db * base);
-static rn_t write_db_file_arr(FILE *fp, record_db *base);
-static rn_t amount_db_arr(record_db *base);
 
-/* ########################################### */
-
-/*
-Пишет базу в файл filename
-*/
-rn_t write_db_file(char * filename) {
-	rn_t count = 0;
-	FILE *fp;
-	fp = fopen(filename, "w");
-	if (fp == NULL) {
-		printf("File not write!");
-		return 0;
-	}
-
-
-	if (DB == "ARRAY") {
-		count = write_db_file_arr(fp, &base);
-	}
-	else if (DB == "LIST") {
-
-	}
-	else {
-		printf(ERROR_DB);
-	}
-
-	fclose(fp);
-
-	return count;
-}
-
-/*
-Запись в файловый поток *fp, базы  *base.
-Возвращает количество записаных записей или 0 при неудаче.
-*/
-rn_t write_db_file_arr(FILE *fp, record_db *base) {
-	uint8_t i = 0;
-
-	if (fp == NULL) {
-		return 0;
-	}
-
-	for (i = 0; i < amount_db_arr(base); i++) {
-		record_t rec;
-
-		if (read_db_arr(i, &rec, base)) {
-			char buf[100];
-			sprintf(buf, "%s : %u : %.2f \n", rec.surname, rec.height, rec.weight);
-			fputs(buf, fp);
-		}
-		else {
-			break;
-		}
-
-	}
-
-	return i;
-}
-
+static rn_t amount_db_arr(record_db_a *base);
+static rn_t amount_db_list(record_db_l * list);
 
 /* ########################################### */
 /*
@@ -77,7 +22,7 @@ uint8_t read_db(rn_t number, record_t * note) {
 		return read_db_arr(number, note, &base);
 	}
 	else if (DB == "LIST") {
-
+		return read_db_list(number, note, &list);
 	}
 
 	return 0;
@@ -87,12 +32,47 @@ uint8_t read_db(rn_t number, record_t * note) {
 Чтение записи number из массива *base в структуру *note
 Возвращает 1 в случае успеха. 0 - неудача.
 */
-uint8_t read_db_arr(rn_t number, record_t * note, record_db * base) {
+uint8_t read_db_arr(rn_t number, record_t * note, record_db_a * base) {
 	strcpy(note->surname, base->db[number].surname);
 	note->height = base->db[number].height;
 	note->weight = base->db[number].weight;
 
 	return 1;
+}
+
+/*
+Чтение записи number из списка *list в структуру *note
+Возвращает 1 в случае успеха. 0 - неудача.
+*/
+uint8_t read_db_list(rn_t number, record_t * note, record_db_l *list) {
+	record_t_l * follow = list->first;
+	rn_t count = 0;
+
+	if (follow != NULL) {
+		do {
+			// Эта наша запись
+			if (count == number) {
+
+				strcpy(note->surname, follow->data->surname);
+				note->height = follow->data->height;
+				note->weight = follow->data->weight;
+				return 1;
+			}
+			count++;
+			follow = follow->next;
+		} while (follow != list->last);
+
+		// Проверим последюю запись в списке
+		if (count == number) {
+			strcpy(note->surname, follow->data->surname);
+			note->height = follow->data->height;
+			note->weight = follow->data->weight;
+			return 1;
+		}
+	}
+
+	return 0;
+	
 }
 
 /* ########################################### */
@@ -104,7 +84,7 @@ rn_t amount_db() {
 		return	amount_db_arr(&base);
 	}
 	else if (DB == "LIST") {
-
+		return amount_db_list(&list);
 	}
 
 	return 0;
@@ -114,10 +94,25 @@ rn_t amount_db() {
 /*
 Возвращает количество элементов в массиве записей *base
 */
-rn_t amount_db_arr(record_db *base) {
+rn_t amount_db_arr(record_db_a *base) {
 	return base->pointer;
 }
 
+/*
+Возвращает количество элементов в списке *list
+*/
+rn_t amount_db_list(record_db_l * list){
+	rn_t count = 1;
+	record_t_l * follow = list->first;
+
+	if (follow != NULL) {
+		do {
+			count++;
+			follow = follow->next;
+		}while (follow != list->last);
+	}
+	return count;
+}
 
 
 /* ########################################### */
@@ -149,7 +144,7 @@ uint8_t write_db(record_t note, rn_t * number) {
 Запись записи note в массив *base. Номер ячейки помещается в *number.
 Возвращает 1 в случае успеха. 0 - неудача.
 */
-uint8_t write_db_arr(record_t note, record_db * base, rn_t * number) {
+uint8_t write_db_arr(record_t note, record_db_a * base, rn_t * number) {
 	strcpy(base->db[base->pointer].surname, note.surname);
 	base->db[base->pointer].height = note.height;
 	base->db[base->pointer].weight = note.weight;
@@ -162,11 +157,15 @@ uint8_t write_db_arr(record_t note, record_db * base, rn_t * number) {
 }
 
 uint8_t write_db_list(record_t note, record_db_l * list, rn_t * number) {
+	// Выделим память для элемента списка 
 	record_t_l * record = malloc(sizeof(note));
+	// Выделим память для записи.
+	record->data = malloc(sizeof(record_t));
+
 	if (record != NULL) {
-		strcpy(record->surname, note.surname);
-		record->height = note.height;
-		record->weight = note.weight;
+		strcpy(record->data->surname, note.surname);
+		record->data->height = note.height;
+		record->data->weight = note.weight;
 
 		// Если наш блок первый
 		if (list->first == NULL) {

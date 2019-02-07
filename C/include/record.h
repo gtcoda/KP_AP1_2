@@ -29,5 +29,6 @@ void write_file();
 char * mfgets(char * string, int num, FILE * filestream);
 void view_record();
 void read_file();
+void amount(void);
 
 #endif 

@@ -35,13 +35,36 @@ void record_parsing(char * string) {
 
 void write_file() {
 	char filename[100];
-	rn_t count;
+	rn_t count = 0;
 	printf("Input filename: ");
 	mfgets(filename, 100, stdin);
 	
-	count = write_db_file((char *)&filename);
+	FILE *fp;
+	record_t rec;
+	fp = fopen(filename, "w");
 
-	printf("Write %u records!\n", count);
+	if (fp != NULL) {
+
+
+
+		for (count = 0; count < amount_db(); count++) {
+
+			if (read_db(count, &rec)) {
+				char buf[100];
+				sprintf(buf, "%s : %u : %.2f \n", rec.surname, rec.height, rec.weight);
+				fputs(buf, fp);
+			}
+			else {
+				break;
+			}
+		}
+		fclose(fp);
+		printf("Write %u records!\n", count);
+	}
+	else {
+		printf(" NO open file!\n");
+	}
+	
 }
 
 
@@ -99,3 +122,6 @@ void view_record() {
 }
 
 
+void amount(void) {
+	printf("Amount %u record.\n", amount_db() );
+}

@@ -25,14 +25,12 @@ typedef struct {
 typedef struct {
 	record_t db[DB_SIZE];
 	uint8_t pointer; // Номер свободной ячейки
-} record_db;
+} record_db_a;
 
 
 
 typedef struct _record_t_l {
-	char surname[NAME_SIZE];
-	uint32_t height;
-	float weight;
+	record_t * data;
 	struct _record_t_l * next;
 	struct _record_t_l * prev;
 }record_t_l;
@@ -50,7 +48,6 @@ typedef uint16_t rn_t; // тип номера записи в базе
 
 uint8_t write_db(record_t note, rn_t * number);
 uint8_t read_db(rn_t number, record_t * note);
-rn_t write_db_file(char * filename);
 rn_t amount_db();
 
 

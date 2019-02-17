@@ -13,6 +13,12 @@ static uint8_t write_db_list(record_t note, record_db_l * list, rn_t * number);
 static rn_t amount_db_arr(record_db_a *base);
 static rn_t amount_db_list(record_db_l * list);
 
+static uint8_t fix_db_arr(record_t note, record_db_a * base, rn_t number);
+static uint8_t fix_db_list(record_t note, record_db_l * list, rn_t number);
+
+
+static record_t_l * record_of_list(record_db_l * list, rn_t number);
+
 /* ########################################### */
 /*
 Получить запись number из базы.
@@ -102,14 +108,22 @@ rn_t amount_db_arr(record_db_a *base) {
 Возвращает количество элементов в списке *list
 */
 rn_t amount_db_list(record_db_l * list){
-	rn_t count = 1;
+	rn_t count = 0;
 	record_t_l * follow = list->first;
 
 	if (follow != NULL) {
-		do {
-			count++;
-			follow = follow->next;
-		}while (follow != list->last);
+		count = 1; // Индексы считаются от 0, количество начинается с 1
+		if (list->first == list->last) { // У нас всего 1 элемент
+			return count; 
+		}
+		else {
+			// Пройдем по списку и посчитаем количество элементов
+			do {
+				count++;
+				follow = follow->next;
+			} while (follow != list->last);			
+		
+		}
 	}
 	return count;
 }
@@ -133,9 +147,11 @@ uint8_t write_db(record_t note, rn_t * number) {
 
 	else if (DB == "LIST") {
 		write_db_list(note, &list, number);
+		return 1;
 	}
 	else {
 		printf(ERROR_DB);
+		return 0;
 	}
 	return 0;
 }
@@ -197,3 +213,81 @@ uint8_t write_db_list(record_t note, record_db_l * list, rn_t * number) {
 	
 }
 
+
+
+/*
+Изменить запись с номером number
+*/
+uint8_t fix_db(record_t note, rn_t number) {
+	if (DB == "ARRAY") {
+		if (fix_db_arr(note, &base, number)) {
+			return 1;
+		}
+		else {
+			return 0;
+		}
+	}
+
+	else if (DB == "LIST") {
+		if (fix_db_list(note, &list, number)) {
+			return 1;
+		}
+		else {
+			return 0;
+		}
+	}
+	else {
+		printf(ERROR_DB);
+		return 0;
+	}
+	return 0;
+}
+
+uint8_t fix_db_arr(record_t note, record_db_a * base, rn_t number) {
+	if (number < DB_SIZE) {
+		strcpy(base->db[number].surname, note.surname);
+		base->db[number].height = note.height;
+		base->db[number].weight = note.weight;
+		return 1;
+	}
+	return 0;
+}
+
+
+/*
+Изменить элемент № number в базе list на note.
+*/
+uint8_t fix_db_list(record_t note, record_db_l * list, rn_t number) {
+	record_t_l * rec = record_of_list(list, number);
+
+	if (rec != NULL) {
+		strcpy(rec->data->surname, note.surname);
+		rec->data->height = note.height;
+		rec->data->weight = note.weight;
+		return 1;
+	}
+
+	return 0;
+
+}
+
+/*
+Находим элемент по номеру
+*/
+record_t_l * record_of_list(record_db_l * list, rn_t number) {
+	rn_t count = 0;
+	record_t_l * follow = list->first;
+
+	if (follow != NULL) {
+
+		do {
+			if (count == number) {
+				return follow;
+			}
+			follow = follow->next;
+			count++;
+		} while (follow != list->last);
+
+	}
+	return NULL;
+}

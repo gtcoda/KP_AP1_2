@@ -49,6 +49,7 @@ typedef uint16_t rn_t; // тип номера записи в базе
 uint8_t write_db(record_t note, rn_t * number);
 uint8_t read_db(rn_t number, record_t * note);
 rn_t amount_db();
+uint8_t fix_db(record_t note, rn_t number);
 
 
 #endif

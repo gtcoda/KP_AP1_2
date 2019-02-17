@@ -24,6 +24,9 @@ void main(void) {
 		if (!strcmp(command, "add")) {
 			add_record();
 		}
+		else if (!strcmp(command, "fix")) {
+			fix();
+		}
 		else if (!strcmp(command, "read")) {
 			read_file();
 		}

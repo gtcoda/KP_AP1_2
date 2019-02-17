@@ -2,14 +2,27 @@
 
 char *filename = RECORD_FILES;
 void record_parsing(char * string);
+void entry_record(record_t * note);
+void trim(char *s);
 
 
 void record_parsing(char * string) {
 	char surname[NAME_SIZE];
 	char height[NAME_SIZE];
 	char weight[NAME_SIZE];
-
-	char *m = strtok(string, ":");
+	char str[STR_SIZE];
+	trim(string);
+	
+	// Уберем все пробельные символы
+	uint8_t i, j;
+	for (i = j = 0; string[i] != '\0'; i++) {
+		if ( (string[i] != ' ') && (string[i] != '\t') ) {
+			str[j++] = string[i];
+		}
+	}
+	str[j] = '\0';
+	
+	char *m = strtok(str, ":");
 
 	for (uint8_t i = 0; m != NULL; i++) {
 
@@ -92,10 +105,15 @@ void read_file() {
 }
 
 void add_record() {
-	char str[STR_SIZE];
-	printf("Enter Record:");
-	mfgets(str, sizeof(str), stdin);
-	record_parsing(str);
+	record_t record;
+	entry_record(&record);
+	
+	if ( write_db(record, NULL) ) {
+		printf("Writing!\n");
+	}
+	else {
+		printf("Write error!\n");
+	}
 }
 
 
@@ -111,17 +129,86 @@ char * mfgets(char * string, int num, FILE * filestream) {
 
 void view_record() {
 	system("chcp 1251"); // переходим в консоли на русский язык
-	printf(VIEW_HEAD);
-	for (uint8_t i = 0; i < amount_db(); i++) {
-		record_t rec;
-		read_db(i, &rec);
 
-		printf("%-2u |%-8s| %-8u| %-8.2f", i, rec.surname, rec.height, rec.weight);
-		printf("\n\r");
+	if (amount_db() == 0) {// Нет ни одной записи
+		printf("There is no record!\n");
+	}
+	else {
+		rn_t count = amount_db();
+		printf(VIEW_HEAD);
+		for (uint8_t i = 0; i <= count-1; i++) {
+			record_t rec;
+			read_db(i, &rec);
+
+			printf("%-2u |%-10s| %-10u| %-10.2f", i, rec.surname, rec.height, rec.weight);
+			printf("\n\r");
+		}
 	}
 }
 
+/*
+Изменение записи
+*/
+void fix(void) {
+	rn_t number = 0;
+	record_t record;
+	char str[STR_SIZE];
+	printf("Number of fix record: ");
+	mfgets(str, sizeof(str), stdin);
+	number = (rn_t)strtol(str, NULL, 10);
+
+	entry_record(&record);
+
+	fix_db(record, number);
+}
+
+/*
+Ввод записи
+*/
+void entry_record(record_t * note) {
+	char height[NAME_SIZE];
+	char weight[NAME_SIZE];
+
+	printf("************* Enter Record **********\n");
+	printf("Enter surname: ");
+	mfgets(note->surname, sizeof(note->surname), stdin);
+
+	printf("Enter height: ");
+	mfgets(height, sizeof(height), stdin);
+	note->height = (uint16_t)strtol(height, NULL, 10);
+
+	printf("Enter weight: ");
+	mfgets(weight, sizeof(weight), stdin);
+	note->weight = strtof(weight, NULL);
+}
 
 void amount(void) {
 	printf("Amount %u record.\n", amount_db() );
+}
+
+/*
+Удаляеи пробелы в начале и конце строки
+*/
+void trim(char *s) {
+	size_t i = 0, j;
+	
+	// Удаляем пробелы и tab с начала строки
+	while ((s[i] == ' ') || (s[i] == '\t')) {
+		i++;
+	}
+	if (i > 0) {
+		for (j = 0; j < strlen(s); j++) {
+			s[j] = s[j + i];
+		}
+		s[j] = '\0';
+	}
+
+	// удаляем пробелы и табы с конца строки:
+	i = strlen(s) - 1;
+	while ((s[i] == ' ') || (s[i] == '\t')) {
+		i--;
+	}
+	if (i < (strlen(s) - 1)) {
+		s[i + 1] = '\0';
+	}
 }

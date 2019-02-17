@@ -3,29 +3,17 @@
 char *filename = RECORD_FILES;
 void record_parsing(char * string);
 void entry_record(record_t * note);
-void trim(char *s);
+char * trim(char *s);
 
 
 void record_parsing(char * string) {
 	char surname[NAME_SIZE];
 	char height[NAME_SIZE];
 	char weight[NAME_SIZE];
-	char str[STR_SIZE];
-	trim(string);
 	
-	// Уберем все пробельные символы
-	uint8_t i, j;
-	for (i = j = 0; string[i] != '\0'; i++) {
-		if ( (string[i] != ' ') && (string[i] != '\t') ) {
-			str[j++] = string[i];
-		}
-	}
-	str[j] = '\0';
-	
-	char *m = strtok(str, ":");
+	char *m = strtok(string, SEPARATOR);
 
 	for (uint8_t i = 0; m != NULL; i++) {
-
 		switch (i) {
 		case 0: strcpy(surname, m); break;
 		case 1: strcpy(height, m); break;
@@ -36,7 +24,7 @@ void record_parsing(char * string) {
 
 	record_t record;
 
-	strcpy(record.surname, surname);
+	strcpy(record.surname, trim(surname) );
 	record.height = (uint16_t)strtol(height, NULL, 10);
 	record.weight = strtof(weight, NULL);
 
@@ -58,13 +46,11 @@ void write_file() {
 
 	if (fp != NULL) {
 
-
-
 		for (count = 0; count < amount_db(); count++) {
 
 			if (read_db(count, &rec)) {
 				char buf[100];
-				sprintf(buf, "%s : %u : %.2f \n", rec.surname, rec.height, rec.weight);
+				sprintf(buf, "%s %s %u %s %.2f \n", rec.surname, SEPARATOR, rec.height, SEPARATOR, rec.weight);
 				fputs(buf, fp);
 			}
 			else {
@@ -149,7 +135,7 @@ void view_record() {
 /*
 Изменение записи
 */
-void fix(void) {
+void replace(void) {
 	rn_t number = 0;
 	record_t record;
 	char str[STR_SIZE];
@@ -159,7 +145,7 @@ void fix(void) {
 
 	entry_record(&record);
 
-	fix_db(record, number);
+	replace_db(record, number);
 }
 
 /*
@@ -188,8 +174,9 @@ void amount(void) {
 
 /*
 Удаляеи пробелы в начале и конце строки
+Внимаение! Изменяет и передаваемую строку и возвращает на неё указатель.
 */
-void trim(char *s) {
+char * trim(char *s) {
 	size_t i = 0, j;
 	
 	// Удаляем пробелы и tab с начала строки
@@ -211,4 +198,6 @@ void trim(char *s) {
 	if (i < (strlen(s) - 1)) {
 		s[i + 1] = '\0';
 	}
+
+	return s;
 }

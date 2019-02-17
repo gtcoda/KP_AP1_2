@@ -4,14 +4,20 @@
 
 char welcome[] = ""
 "KP_AP1_2 \n"
+"Для вызова справки наберите help. \n"
+"\n";
+
+char help[] = ""
 "Commands: \n"
 "add		Добавить запись. \n"
+"fix		Заменить запись. \n"
 "read		Прочитать и файл в базу. \n"
 "write		Записать базу в файл. \n"
 "view		Просмотр базы. \n"
+"amount		Просмотр количества элементов в базе. \n"
 "exit		Выход. \n"
+"help		Вызов справки. \n"
 "\n";
-
 
 void main(void) {
 	system("chcp 1251"); // переходим в консоли на русский язык
@@ -25,7 +31,7 @@ void main(void) {
 			add_record();
 		}
 		else if (!strcmp(command, "fix")) {
-			fix();
+			replace();
 		}
 		else if (!strcmp(command, "read")) {
 			read_file();
@@ -38,6 +44,9 @@ void main(void) {
 		}
 		else if (!strcmp(command, "amount")) {
 			amount();
+		}
+		else if (!strcmp(command, "help")) {
+			printf(help);
 		}
 		else if (!strcmp(command, "exit")) {
 			break;

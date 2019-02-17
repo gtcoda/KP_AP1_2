@@ -13,7 +13,7 @@
 #include "db.h"
 
 #define VIEW_HEAD "¹  | Surname | Height | Weight \n\r"
-
+#define SEPARATOR ":"
 
 #define RECORD_FILES "../text2.txt"
 #define DB_SIZE 50
@@ -30,6 +30,6 @@ char * mfgets(char * string, int num, FILE * filestream);
 void view_record();
 void read_file();
 void amount(void);
-void fix(void);
+void replace(void);
 
 #endif 

@@ -13,8 +13,8 @@ static uint8_t write_db_list(record_t note, record_db_l * list, rn_t * number);
 static rn_t amount_db_arr(record_db_a *base);
 static rn_t amount_db_list(record_db_l * list);
 
-static uint8_t fix_db_arr(record_t note, record_db_a * base, rn_t number);
-static uint8_t fix_db_list(record_t note, record_db_l * list, rn_t number);
+static uint8_t replace_db_arr(record_t note, record_db_a * base, rn_t number);
+static uint8_t replace_db_list(record_t note, record_db_l * list, rn_t number);
 
 
 static record_t_l * record_of_list(record_db_l * list, rn_t number);
@@ -216,11 +216,11 @@ uint8_t write_db_list(record_t note, record_db_l * list, rn_t * number) {
 
 
 /*
-Изменить запись с номером number
+Заменить запись с номером number
 */
-uint8_t fix_db(record_t note, rn_t number) {
+uint8_t replace_db(record_t note, rn_t number) {
 	if (DB == "ARRAY") {
-		if (fix_db_arr(note, &base, number)) {
+		if (replace_db_arr(note, &base, number)) {
 			return 1;
 		}
 		else {
@@ -229,7 +229,7 @@ uint8_t fix_db(record_t note, rn_t number) {
 	}
 
 	else if (DB == "LIST") {
-		if (fix_db_list(note, &list, number)) {
+		if (replace_db_list(note, &list, number)) {
 			return 1;
 		}
 		else {
@@ -243,7 +243,7 @@ uint8_t fix_db(record_t note, rn_t number) {
 	return 0;
 }
 
-uint8_t fix_db_arr(record_t note, record_db_a * base, rn_t number) {
+uint8_t replace_db_arr(record_t note, record_db_a * base, rn_t number) {
 	if (number < DB_SIZE) {
 		strcpy(base->db[number].surname, note.surname);
 		base->db[number].height = note.height;
@@ -255,9 +255,9 @@ uint8_t fix_db_arr(record_t note, record_db_a * base, rn_t number) {
 
 
 /*
-Изменить элемент № number в базе list на note.
+Заменить элемент № number в базе list на note.
 */
-uint8_t fix_db_list(record_t note, record_db_l * list, rn_t number) {
+uint8_t replace_db_list(record_t note, record_db_l * list, rn_t number) {
 	record_t_l * rec = record_of_list(list, number);
 
 	if (rec != NULL) {

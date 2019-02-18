@@ -149,6 +149,28 @@ void replace(void) {
 }
 
 /*
+Добавление записи
+*/
+void insert(void) {
+	rn_t number = 0;
+	insert_t specifier;
+	record_t record;
+	char str[STR_SIZE];
+	printf("Number of insert record: ");
+	mfgets(str, sizeof(str), stdin);
+	number = (rn_t)strtol(str, NULL, 10);
+	
+	printf("Select position: ");
+	printf("0 - BEFORE; \n");
+	printf("1 - AFTER; \n");
+	mfgets(str, sizeof(str), stdin);
+	specifier = (insert_t)strtol(str, NULL, 10);
+
+	entry_record(&record);
+
+	insert_db(record, number, specifier);
+}
+/*
 Ввод записи
 */
 void entry_record(record_t * note) {

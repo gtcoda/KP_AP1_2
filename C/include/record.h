@@ -31,5 +31,6 @@ void view_record();
 void read_file();
 void amount(void);
 void replace(void);
+void insert(void);
 
 #endif 

@@ -16,6 +16,8 @@ static rn_t amount_db_list(record_db_l * list);
 static uint8_t replace_db_arr(record_t note, record_db_a * base, rn_t number);
 static uint8_t replace_db_list(record_t note, record_db_l * list, rn_t number);
 
+static uint8_t insert_db_arr(record_t note, record_db_a * base, rn_t number, insert_t specifier);
+static uint8_t insert_db_list(record_t note, record_db_l * list, rn_t number, insert_t specifier);
 
 static record_t_l * record_of_list(record_db_l * list, rn_t number);
 
@@ -271,6 +273,131 @@ uint8_t replace_db_list(record_t note, record_db_l * list, rn_t number) {
 
 }
 
+
+uint8_t insert_db(record_t note, rn_t number, insert_t specifier ) {
+	if (DB == "ARRAY") {
+		if (insert_db_arr(note, &base, number, specifier)) {
+			return 1;
+		}
+		else {
+			return 0;
+		}
+	}
+
+	else if (DB == "LIST") {
+		if (insert_db_list(note, &list, number, specifier)) {
+			return 1;
+		}
+		else {
+			return 0;
+		}
+	}
+	else {
+		printf(ERROR_DB);
+		return 0;
+	}
+	return 0;
+}
+
+uint8_t insert_db_arr(record_t note, record_db_a * base, rn_t number, insert_t specifier) {
+	// Перед выбраным элементом
+	if (specifier == BEFORE) {
+		// Сдвинем базу на одну позицию.
+		for (uint8_t i = base->pointer; i > number; i--) {
+			//base->db[i] = base->db[i - 1];
+			strcpy(base->db[i].surname, base->db[i - 1].surname);
+			base->db[i].height = base->db[i - 1].height;
+			base->db[i].weight = base->db[i - 1].weight;
+		}
+
+		strcpy(base->db[number].surname, note.surname);
+		base->db[number].height = note.height;
+		base->db[number].weight = note.weight;
+
+
+		// Указателя свободной ячейки вперед
+		base->pointer++;
+
+		return 1;
+	}
+
+	// После выбраного элемента
+	if (specifier == AFTER) {
+		if (number == base->pointer) {
+			return write_db_arr(note, base, NULL);
+		}
+		// Вставка после элемента, это то же самое что вставка перд элемент+1.
+		// Вызовем рекурсивно.
+		return insert_db_arr(note, base, (number + 1), BEFORE);
+
+	}
+
+	return 0;
+}
+
+
+uint8_t insert_db_list(record_t note, record_db_l * list, rn_t number, insert_t specifier) {
+	// Перед выбраным элементом
+	if (specifier == BEFORE) { 
+		
+		record_t_l * target = record_of_list(list, number);
+		if (target == NULL) {
+			return 0;
+		}
+
+		// Выделим память для элемента списка 
+		record_t_l * record = malloc(sizeof(note));
+		// Выделим память для записи.
+		record->data = malloc(sizeof(record_t));
+
+		if (record != NULL) {
+			strcpy(record->data->surname, note.surname);
+			record->data->height = note.height;
+			record->data->weight = note.weight;
+		}
+
+		// Меняем указатели
+
+		if (target == list->first) { // Вставка перед первым
+			record->next = target;
+			record->prev = record;
+
+			list->first = record;
+
+			target->prev = record;
+		}
+		else { // Обычная вставка
+
+			// Установим ссылки для вставляемого элемента. 
+			record->next = target; 
+			record->prev = target->prev;
+
+			// Обновим ссылку блока перед вставляемым.
+			target->prev->next = record;
+
+			// Обновим ссылку на целевой блок.
+			target->prev = record;
+
+
+		}
+
+		return 1;
+
+	}
+
+	// Вставка после выбраного
+	if (specifier == AFTER) {
+		if (number == ( amount_db_list(list) - 1) ) {// Встака после последнего. Обычное добавление элемента.
+			write_db_list(note, list, NULL);
+			return 1;
+		}
+		// Вставка после элемента, это то же самое что вставка перд элемент+1.
+		// Вызовем рекурсивно.
+		return insert_db_list(note, list, (number+1), BEFORE);
+	}
+
+	return 0;
+}
 /*
 Находим элемент по номеру
 */

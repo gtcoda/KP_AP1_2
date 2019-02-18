@@ -39,6 +39,9 @@ void main(void) {
 		else if (!strcmp(command, "write")) {
 			write_file();
 		}
+		else if (!strcmp(command, "insert")) {
+			insert();
+		}
 		else if (!strcmp(command, "view")) {
 			view_record();
 		}

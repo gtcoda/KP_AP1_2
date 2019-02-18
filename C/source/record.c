@@ -160,7 +160,7 @@ void insert(void) {
 	mfgets(str, sizeof(str), stdin);
 	number = (rn_t)strtol(str, NULL, 10);
 	
-	printf("Select position: ");
+	printf("Select position: \n");
 	printf("0 - BEFORE; \n");
 	printf("1 - AFTER; \n");
 	mfgets(str, sizeof(str), stdin);

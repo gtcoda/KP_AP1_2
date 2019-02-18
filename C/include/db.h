@@ -44,7 +44,8 @@ typedef struct {
 
 typedef enum {
 	BEFORE,
-	AFTER
+	AFTER,
+	ONE
 } insert_t;
 
 typedef uint16_t rn_t; // тип номера записи в базе
@@ -55,6 +56,7 @@ uint8_t read_db(rn_t number, record_t * note);
 rn_t amount_db();
 uint8_t replace_db(record_t note, rn_t number);
 uint8_t insert_db(record_t note, rn_t number, insert_t specifier);
+uint8_t delite_db(rn_t number, insert_t specifier);
 
 
 #endif

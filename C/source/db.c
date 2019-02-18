@@ -19,9 +19,12 @@ static uint8_t replace_db_list(record_t note, record_db_l * list, rn_t number);
 static uint8_t insert_db_arr(record_t note, record_db_a * base, rn_t number, insert_t specifier);
 static uint8_t insert_db_list(record_t note, record_db_l * list, rn_t number, insert_t specifier);
 
+static uint8_t delite_db_arr(record_db_a * base, rn_t number, insert_t specirier);
+static uint8_t delite_db_list(record_db_l * list, rn_t number, insert_t specirier);
+
 static record_t_l * record_of_list(record_db_l * list, rn_t number);
 
-/* ########################################### */
+/* ######################################  Чтение из базы  ############################################ */
 /*
 Получить запись number из базы.
 */
@@ -83,7 +86,7 @@ uint8_t read_db_list(rn_t number, record_t * note, record_db_l *list) {
 	
 }
 
-/* ########################################### */
+/* ######################################  Количество записей в базе  ############################################ */
 /*
 Возвращает количество записей в базе
 */
@@ -131,7 +134,7 @@ rn_t amount_db_list(record_db_l * list){
 }
 
 
-/* ########################################### */
+/* ######################################  Запись в базу  ############################################ */
 
 /*
 Добавить запись note в базу.
@@ -216,7 +219,7 @@ uint8_t write_db_list(record_t note, record_db_l * list, rn_t * number) {
 }
 
 
-
+/* ######################################  Замена записи  ############################################ */
 /*
 Заменить запись с номером number
 */
@@ -274,6 +277,13 @@ uint8_t replace_db_list(record_t note, record_db_l * list, rn_t number) {
 }
 
 
+/* ######################################  Вставка в базу  ############################################ */
+
+/*
+Вставка записи note в позицию number в соответствии со спецификатором.
+0 - перед элементом number
+1 - после элемента number
+*/
 uint8_t insert_db(record_t note, rn_t number, insert_t specifier ) {
 	if (DB == "ARRAY") {
 		if (insert_db_arr(note, &base, number, specifier)) {
@@ -298,6 +308,7 @@ uint8_t insert_db(record_t note, rn_t number, insert_t specifier ) {
 	}
 	return 0;
 }
+
 
 uint8_t insert_db_arr(record_t note, record_db_a * base, rn_t number, insert_t specifier) {
 	// Перед выбраным элементом
@@ -398,6 +409,109 @@ uint8_t insert_db_list(record_t note, record_db_l * list, rn_t number, insert_t 
 
 	return 0;
 }
+
+/* ######################################  Удаление элементов  ############################################ */
+uint8_t delite_db(rn_t number, insert_t specifier) {
+	if (DB == "ARRAY") {
+		if (delite_db_arr(&base, number, specifier)) {
+			return 1;
+		}
+		else {
+			return 0;
+		}
+	}
+
+	else if (DB == "LIST") {
+		if (delite_db_list(&list, number, specifier)) {
+			return 1;
+		}
+		else {
+			return 0;
+		}
+	}
+	else {
+		printf(ERROR_DB);
+		return 0;
+	}
+	return 0;
+}
+
+
+uint8_t delite_db_arr(record_db_a * base, rn_t number, insert_t specirier) {
+	return 0;
+}
+
+uint8_t delite_db_list(record_db_l * list, rn_t number, insert_t specirier) {
+
+	record_t_l * target = record_of_list(list, number);
+	if (target == NULL) {
+		return 0;
+	}
+
+	// Удалить один элемент
+	if (specirier == ONE) {
+		// Уберем элемент из списка.
+		target->prev->next = target->next;
+		target->next->prev = target->prev;
+		// Освободим память
+		// Обязательно сначала память для записи. Потом структуру связи.
+		free(target->data);
+		free(target);
+
+		return 1;
+	}
+
+	if (specirier == AFTER) {
+		// Сохраним адрес последнего лемента списка
+		record_t_l * last_free = list->last;
+		
+		// Обрежем список
+		list->last = target->prev;
+		// Завернем последний элемент
+		target->prev->next = target->prev;
+
+		
+		// Освобождаем память.
+		// Пройдем от последнего элемента, до нового конца списка
+		do {
+			target = last_free;
+			last_free = last_free->prev;
+			// Обязательно сначала память для записи. Потом структуру связи.
+			free(target->data);
+			free(target);
+
+		} while (last_free != list->last);
+
+		return 1;
+	}
+
+	if (specirier == BEFORE) {
+		// Сохраним адрес последнего лемента списка
+		record_t_l * first_free = list->first;
+
+		// Обрежем список
+		list->first = target->next;
+		// Завернем первый элемент
+		target->next->prev = target->next;
+
+
+		// Освобождаем память.
+		// Пройдем от первого элемента до нового начала списка.
+		do {
+			target = first_free;
+			first_free = first_free->next;
+			// Обязательно сначала память для записи. Потом структуру связи.
+			free(target->data);
+			free(target);
+
+		} while (first_free != list->first);
+
+		return 1;
+	}
+
+	return 0;
+}
+/* ######################################  Вспомогательные функции  ############################################ */
 /*
 Находим элемент по номеру
 */

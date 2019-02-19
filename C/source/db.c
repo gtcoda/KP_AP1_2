@@ -26,6 +26,8 @@ static uint8_t sort_db_arr(record_db_a * base, sort_t column);
 static uint8_t sort_bubble_db_arr(record_db_a * base, sort_t column);
 static uint8_t sort_db_list(record_db_l * list, sort_t column);
 
+
+static void swap_arr(record_t * cell_1, record_t * cell_2);
 static record_t_l * record_of_list(record_db_l * list, rn_t number);
 
 /* ######################################  Чтение из базы  ############################################ */
@@ -162,7 +164,7 @@ uint8_t write_db(record_t note, rn_t * number) {
 		printf(ERROR_DB);
 		return 0;
 	}
-	return 0;
+
 }
 
 /*
@@ -249,7 +251,6 @@ uint8_t replace_db(record_t note, rn_t number) {
 		printf(ERROR_DB);
 		return 0;
 	}
-	return 0;
 }
 
 uint8_t replace_db_arr(record_t note, record_db_a * base, rn_t number) {
@@ -588,6 +589,7 @@ uint8_t sort_db_arr(record_db_a * base, sort_t column) {
 
 }
 
+
 /*
 Сортировка массива пузырьком
 */
@@ -595,55 +597,33 @@ uint8_t sort_bubble_db_arr(record_db_a * base, sort_t column) {
 	uint8_t flag = 1;
 	while (flag) {
 		flag = 0;
-		// Сортируем по полю "HEIGHT"
-		if (column == HEIGHT) {
 
-			for (rn_t i = 0; i < base->pointer - 1; i++) {
- 
-				if (base->db[i].height > base->db[i+1].height) {
-					record_t A;
-					A = base->db[i];
-					base->db[i] = base->db[i + 1];
-					base->db[i + 1] = A;
-					flag = 1;
-				}
-
+		for (rn_t i = 0; i < base->pointer - 1; i++) {
+			// Сортируем по полю "HEIGHT"
+			if ( column == HEIGHT && 
+				 base->db[i].height > base->db[i + 1].height ) {
+				swap_arr(&base->db[i], &base->db[i + 1]);
+				flag = 1;
 			}
+
+			// Сортируем по полю "WEIGHT"
+			if ( column == WEIGHT && 
+				 base->db[i].weight > base->db[i + 1].weight ) {
+				swap_arr(&base->db[i], &base->db[i + 1]);
+				flag = 1;
+			}
+
+			// Сортируем по полю "SURNAME"
+			if ( column == SURNAME && 
+				 strcmp(base->db[i].surname, base->db[i + 1].surname) > 0  ) {
+				swap_arr(&base->db[i], &base->db[i + 1]);
+				flag = 1;
+			}
+
 
 		}
 
-		// Сортируем по полю "WEIGHT"
-		else if (column == WEIGHT) {
-
-			for (rn_t i = 0; i < base->pointer - 1; i++) {
-
-				if (base->db[i].weight > base->db[i + 1].weight) {
-					record_t A;
-					A = base->db[i];
-					base->db[i] = base->db[i + 1];
-					base->db[i + 1] = A;
-					flag = 1;
-				}
-
-			}
-
-		}
-		// Сортируем по полю "SURNAME"
-		else if (column == SURNAME) {
-			
-
-			for (rn_t i = 0; i < base->pointer - 1; i++) {
-				
-				if ( strcmp(base->db[i].surname, base->db[i + 1].surname) > 0 ) {
-					record_t A;
-					A = base->db[i];
-					base->db[i] = base->db[i + 1];
-					base->db[i + 1] = A;
-					flag = 1;
-				}
-
-			}
-		}
+		
 
 	}
 
@@ -680,5 +660,14 @@ record_t_l * record_of_list(record_db_l * list, rn_t number) {
 	return NULL;
 }
 
-
+/*
+Для сортировки пузырьком.
+Меняет местами элементы массива element1 и element2.
+*/
+void swap_arr(record_t * element1, record_t * element2) {
+	record_t A;
+	A = *element1;
+	*element1 = *element2;
+	*element2 = A;
+}
 

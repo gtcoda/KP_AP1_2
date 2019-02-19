@@ -314,7 +314,7 @@ uint8_t insert_db_arr(record_t note, record_db_a * base, rn_t number, insert_t s
 	// Перед выбраным элементом
 	if (specifier == BEFORE) {
 		// Сдвинем базу на одну позицию.
-		for (uint8_t i = base->pointer; i > number; i--) {
+		for (rn_t i = base->pointer; i > number; i--) {
 			//base->db[i] = base->db[i - 1];
 			strcpy(base->db[i].surname, base->db[i - 1].surname);
 			base->db[i].height = base->db[i - 1].height;
@@ -438,6 +438,41 @@ uint8_t delite_db(rn_t number, insert_t specifier) {
 
 
 uint8_t delite_db_arr(record_db_a * base, rn_t number, insert_t specirier) {
+	if (specirier == ONE) {
+		if (number < base->pointer) {
+			for (rn_t i = number; i < base->pointer; i++) {
+				//base->db[i] = base->db[i + 1];
+				strcpy(base->db[i].surname, base->db[i + 1].surname);
+				base->db[i].height = base->db[i + 1].height;
+				base->db[i].weight = base->db[i + 1].weight;
+			}
+			base->pointer--;
+			return 1;
+		}
+	}
+
+	if (specirier == BEFORE) {
+		if (number < base->pointer) {
+
+			for (uint8_t i = 0; i < ( base->pointer - number - 1) ; i++) {
+				//base->db[i] = base->db[number + i + 1];
+				strcpy(base->db[i].surname, base->db[number + i + 1].surname);
+				base->db[i].height = base->db[number + i + 1].height;
+				base->db[i].weight = base->db[number + i + 1].weight;
+			}
+
+			base->pointer = base->pointer - number - 1;
+			return 1;
+		}
+	}
+	
+	if (specirier == AFTER) {
+		if (number < base->pointer) {
+			base->pointer = number;
+			return 1;
+		}
+		
+	}
 	return 0;
 }
 

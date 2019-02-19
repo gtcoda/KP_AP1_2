@@ -32,5 +32,6 @@ void read_file();
 void amount(void);
 void replace(void);
 void insert(void);
+void delite(void);
 
 #endif 

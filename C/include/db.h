@@ -15,6 +15,7 @@
 
 #define DB_SIZE 50
 #define NAME_SIZE 40
+typedef uint16_t rn_t; // тип номера записи в базе
 
 typedef struct {
 	char surname[NAME_SIZE];
@@ -24,7 +25,7 @@ typedef struct {
 
 typedef struct {
 	record_t db[DB_SIZE];
-	uint8_t pointer; // Номер свободной ячейки
+	rn_t pointer; // Номер свободной ячейки
 } record_db_a;
 
 

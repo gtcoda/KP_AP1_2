@@ -43,6 +43,9 @@ void main(void) {
 		else if (!strcmp(command, "insert")) {
 			insert();
 		}
+		else if (!strcmp(command, "delite")) {
+			delite();
+		}
 		else if (!strcmp(command, "view")) {
 			view_record();
 		}

@@ -170,6 +170,27 @@ void insert(void) {
 
 	insert_db(record, number, specifier);
 }
+
+
+void delite(void) {
+	rn_t number = 0;
+	insert_t specifier;
+	char str[STR_SIZE];
+
+	printf("Number of delite record: ");
+	mfgets(str, sizeof(str), stdin);
+	number = (rn_t)strtol(str, NULL, 10);
+
+	printf("Input specifir: \n");
+	printf("0 - BEFORE; \n");
+	printf("1 - AFTER; \n");
+	printf("2 - ONE; \n");
+	mfgets(str, sizeof(str), stdin);
+	specifier = (insert_t)strtol(str, NULL, 10);
+	delite_db(number, specifier);
+
+}
+
 /*
 ¬вод записи
 */

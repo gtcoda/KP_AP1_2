@@ -9,7 +9,9 @@
 #include <string.h>
 
 
-#define DB "LIST" // LIST - связный список, ARRAY - массив
+#define DB "ARRAY" // LIST - связный список, ARRAY - массив
+#define SORT "BUBBLE" // BUBBLE - сортировка пузырьком
+#define SORT_FIELD "SURNAME" // SURNAME, HEIGHT, WEIGHT Поле сортировки
 
 #define ERROR_DB "Not model DB!"
 
@@ -49,6 +51,13 @@ typedef enum {
 	ONE
 } insert_t;
 
+
+typedef enum {
+	SURNAME,
+	HEIGHT, 
+	WEIGHT
+} sort_t;
+
 typedef uint16_t rn_t; // тип номера записи в базе
 
 
@@ -58,6 +67,7 @@ rn_t amount_db();
 uint8_t replace_db(record_t note, rn_t number);
 uint8_t insert_db(record_t note, rn_t number, insert_t specifier);
 uint8_t delite_db(rn_t number, insert_t specifier);
+uint8_t sort_db(sort_t column);
 
 
 #endif

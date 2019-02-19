@@ -52,6 +52,9 @@ void main(void) {
 		else if (!strcmp(command, "amount")) {
 			amount();
 		}
+		else if (!strcmp(command, "sort")) {
+			sort();
+		}
 		else if (!strcmp(command, "help")) {
 			printf(help);
 		}

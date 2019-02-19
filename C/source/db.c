@@ -22,6 +22,10 @@ static uint8_t insert_db_list(record_t note, record_db_l * list, rn_t number, in
 static uint8_t delite_db_arr(record_db_a * base, rn_t number, insert_t specirier);
 static uint8_t delite_db_list(record_db_l * list, rn_t number, insert_t specirier);
 
+static uint8_t sort_db_arr(record_db_a * base, sort_t column);
+static uint8_t sort_bubble_db_arr(record_db_a * base, sort_t column);
+static uint8_t sort_db_list(record_db_l * list, sort_t column);
+
 static record_t_l * record_of_list(record_db_l * list, rn_t number);
 
 /* ######################################  Чтение из базы  ############################################ */
@@ -546,6 +550,114 @@ uint8_t delite_db_list(record_db_l * list, rn_t number, insert_t specirier) {
 
 	return 0;
 }
+
+/* ######################################  Сортировка  ############################################ */
+
+uint8_t sort_db(sort_t column) {
+	if (DB == "ARRAY") {
+		if (sort_db_arr(&base, column)) {
+			return 1;
+		}
+		else {
+			return 0;
+		}
+	}
+
+	else if (DB == "LIST") {
+		if (sort_db_list(&list, column)) {
+			return 1;
+		}
+		else {
+			return 0;
+		}
+	}
+	else {
+		printf(ERROR_DB);
+		return 0;
+	}
+	return 0;
+}
+
+
+
+uint8_t sort_db_arr(record_db_a * base, sort_t column) {
+	if (SORT == "BUBBLE") {
+		return sort_bubble_db_arr(base, column);
+	}
+	return 0;
+
+}
+
+/*
+Сортировка массива пузырьком
+*/
+uint8_t sort_bubble_db_arr(record_db_a * base, sort_t column) {
+	uint8_t flag = 1;
+	while (flag) {
+		flag = 0;
+		// Сортируем по полю "HEIGHT"
+		if (column == HEIGHT) {
+
+			for (rn_t i = 0; i < base->pointer - 1; i++) {
+ 
+				if (base->db[i].height > base->db[i+1].height) {
+					record_t A;
+					A = base->db[i];
+					base->db[i] = base->db[i + 1];
+					base->db[i + 1] = A;
+					flag = 1;
+				}
+
+			}
+
+		}
+
+		// Сортируем по полю "WEIGHT"
+		else if (column == WEIGHT) {
+
+			for (rn_t i = 0; i < base->pointer - 1; i++) {
+
+				if (base->db[i].weight > base->db[i + 1].weight) {
+					record_t A;
+					A = base->db[i];
+					base->db[i] = base->db[i + 1];
+					base->db[i + 1] = A;
+					flag = 1;
+				}
+
+			}
+
+		}
+		// Сортируем по полю "SURNAME"
+		else if (column == SURNAME) {
+			
+
+			for (rn_t i = 0; i < base->pointer - 1; i++) {
+				
+				if ( strcmp(base->db[i].surname, base->db[i + 1].surname) > 0 ) {
+					record_t A;
+					A = base->db[i];
+					base->db[i] = base->db[i + 1];
+					base->db[i + 1] = A;
+					flag = 1;
+				}
+
+			}
+		}
+
+	}
+
+	return 1;
+
+}
+
+
+
+uint8_t sort_db_list(record_db_l * list, sort_t column) {
+
+
+	return 0;
+}
 /* ######################################  Вспомогательные функции  ############################################ */
 /*
 Находим элемент по номеру
@@ -567,3 +679,6 @@ record_t_l * record_of_list(record_db_l * list, rn_t number) {
 	}
 	return NULL;
 }
+
+
+

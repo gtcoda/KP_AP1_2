@@ -215,6 +215,30 @@ void amount(void) {
 	printf("Amount %u record.\n", amount_db() );
 }
 
+
+void sort(void) {
+	sort_t column;
+	char str[STR_SIZE];
+
+	printf("Input specifir: \n");
+	printf("0 - SURNAME; \n");
+	printf("1 - HEIGHT; \n");
+	printf("2 - WEIGHT; \n");
+	mfgets(str, sizeof(str), stdin);
+	column = (insert_t)strtol(str, NULL, 10);
+
+
+	if (sort_db(column)) {
+		printf("Sort end! \n");
+		view_record();
+	}
+	else {
+		printf("Sort falled! \n");
+	}
+}
+
+
+
 /*
 Удаляеи пробелы в начале и конце строки
 Внимаение! Изменяет и передаваемую строку и возвращает на неё указатель.

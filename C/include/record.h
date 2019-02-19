@@ -33,5 +33,6 @@ void amount(void);
 void replace(void);
 void insert(void);
 void delite(void);
+void sort(void);
 
 #endif 

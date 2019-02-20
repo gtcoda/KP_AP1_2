@@ -9,7 +9,7 @@
 #include <string.h>
 
 
-#define DB "ARRAY" // LIST - связный список, ARRAY - массив
+#define DB "LIST" // LIST - связный список, ARRAY - массив
 #define SORT "BUBBLE" // BUBBLE - сортировка пузырьком
 #define SORT_FIELD "SURNAME" // SURNAME, HEIGHT, WEIGHT Поле сортировки
 

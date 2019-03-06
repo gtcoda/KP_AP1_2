@@ -44,7 +44,7 @@ void db_manager(void) {
 			char db_name[NAME_SIZE];
 			printf("======================================================== \n");
 			// Получим имя базы.
-			printf("Введите имя базы: ");
+			printf("Введите имя базы[%s]: ", DB_DAFAULT_NAME);
 			mfgets(db_name, NAME_SIZE, stdin);
 
 			if (strcmp (db_name, "") == 0 ) {
@@ -64,7 +64,7 @@ void db_manager(void) {
 			free(items[m]);
 		}
 
-	clear (COUNT_LINE_VELCOM, 0);
+	clear (0, COUNT_LINE_VELCOM);
 }
 
 
@@ -250,13 +250,17 @@ void view_record() {
 void replace(void) {
 	// Проверим наличие базы. 
 	if (active_db == NULL) { db_manager(); }
-	rn_t i;
+	rn_t number = 0;
 
-	i = view_record_choice();
+	number = view_record_choice();
 
 	record_t record;
 	entry_record(&record);
-	replace_db(record, i, active_db);
+	replace_db(record, number, active_db);
+	
+	// Выведем измененную базу.
+	clear(0, LINE_WORK);
+	view_record();
 }
 
 /*
@@ -274,11 +278,11 @@ void insert(void) {
 	
 	printf("Select position: \n");
 		
-	char * items[2] = {	"0 - BEFORE;",
-						"1 - AFTER;"
+	char * items[2] = {	"0 - BEFORE.",
+						"1 - AFTER."
 	};
 	
-	specifier = menu(1, LINE_WORK + 1, items, 2);
+	specifier = menu(1, LINE_WORK + 1, items, sizeof(items) / sizeof(items[0]));
 	clear(1, LINE_WORK);
 
 
@@ -286,7 +290,8 @@ void insert(void) {
 
 	insert_db(record, number, specifier, active_db);
 
-	clear(1, LINE_WORK);
+	// Выведем измененную базу.
+	clear(0, LINE_WORK);
 	view_record();
 }
 
@@ -297,20 +302,23 @@ void delite(void) {
 
 	rn_t number = 0;
 	insert_t specifier;
-	char str[STR_SIZE];
 
-	printf("Number of delite record: ");
-	mfgets(str, sizeof(str), stdin);
-	number = (rn_t)strtol(str, NULL, 10);
+
+	number = view_record_choice();
 
 	printf("Input specifir: \n");
-	printf("0 - BEFORE; \n");
-	printf("1 - AFTER; \n");
-	printf("2 - ONE; \n");
-	mfgets(str, sizeof(str), stdin);
-	specifier = (insert_t)strtol(str, NULL, 10);
+	char * items[] = {	"0 - BEFORE.",
+						"1 - AFTER.",
+						"2 - ONE."
+	};
+	
+	specifier = menu(1, LINE_WORK + 1, items, sizeof(items) / sizeof(items[0]));
+	clear(1, LINE_WORK);
+	
 	delite_db(number, specifier, active_db);
-
+	// Выведем измененную базу.
+	clear(0, LINE_WORK);
+	view_record();
 }
 
 /*

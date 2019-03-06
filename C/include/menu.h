@@ -35,7 +35,7 @@
 #define MENU_EXIT "Выход.\n"
 
 
-int menu(int x, int y, const char* items[], int cnt);
+int menu(int x, int y, char* items[], int cnt);
 void clear(int X, int Y);
 void clear_line(int x, int cnt);
 #endif

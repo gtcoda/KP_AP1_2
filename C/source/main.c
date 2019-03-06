@@ -12,18 +12,18 @@ void main(void) {
 
 	printf(VELCOM);
 
-	const char* items[] = {
-							MENU_CREATE_DB,
-							MENU_ADD,
-							MENU_REPLACE,
-							MENU_READ,
-							MENU_WRITE,
-							MENU_INSERT,
-							MENU_DELITE,
-							MENU_VIEW,
-							MENU_AMOUNT,
-							MENU_SORT,
-							MENU_EXIT
+	char* items[] = {
+					MENU_CREATE_DB,
+					MENU_ADD,
+					MENU_REPLACE,
+					MENU_READ,
+					MENU_WRITE,
+					MENU_INSERT,
+					MENU_DELITE,
+					MENU_VIEW,
+					MENU_AMOUNT,
+					MENU_SORT,
+					MENU_EXIT
 	};
 
 	while (1) {

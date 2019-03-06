@@ -63,7 +63,7 @@ char getch() {
 	return EOF;
 }
 
-int menu(int x, int y, const char* items[], int cnt) {
+int menu(int x, int y, char* items[], int cnt) {
 	const short COLOR_FG = 7;
 	const short COLOR_BG = 0;
 

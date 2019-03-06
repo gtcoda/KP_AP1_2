@@ -23,7 +23,7 @@ void db_manager(void) {
 
 		char * items[MAX_DB+1];
 		uint8_t i;
-		const char *baseinsert = { "Добавить базу. \n" };
+		char *baseinsert = { "Добавить базу. \n" };
 		
 		clear (0, COUNT_LINE_VELCOM);
 
@@ -74,7 +74,7 @@ void db_manager(void) {
 */
 void db_manager_add(char * name) {
 	
-	strcpy(&manager_db.db_list[ manager_db.count_db ].name_db, name);
+	strcpy((char *)&manager_db.db_list[ manager_db.count_db ].name_db, name);
 	// Создадим новую базу.
 	create_db(&manager_db.db_list[ manager_db.count_db ].pointer_db);
 
@@ -354,18 +354,19 @@ void sort(void) {
 	if (active_db == NULL) { db_manager(); }
 
 	sort_t column;
-	char str[STR_SIZE];
+	printf("Column for sort: \n");
 
-	printf("Input specifir: \n");
-	printf("0 - SURNAME; \n");
-	printf("1 - HEIGHT; \n");
-	printf("2 - WEIGHT; \n");
-	mfgets(str, sizeof(str), stdin);
-	column = (insert_t)strtol(str, NULL, 10);
+	char * items[] = {	"SURNAME.",
+						"HEIGHT.",
+						"WEIGHT."
+	};
+	
+	column = menu(1, LINE_WORK + 1, items, sizeof(items) / sizeof(items[0]));
+	clear(0, LINE_WORK);
 
 
 	if (sort_db(column, active_db)) {
-		printf("Sort end! \n");
+		printf("Сортируем по полю [%s] по возрастанию. \n", items[column]);
 		view_record(active_db);
 	}
 	else {

@@ -1,18 +1,22 @@
-#include "../include/db.h"
 #include "../include/db_arr.h"
 
 
-
+/* ######################################  Создание базы  ############################################ */
+/*
+Создать базу и поместить указатель в **base.
+*/
 
 void create_db(record_db_a ** base) {
 	record_db_a * array;
-		array = malloc(sizeof(record_db_a));
-		// Настроим начальное состояние базы.
-		array->db = malloc(sizeof(record_t) * DB_START_SIZE);
-		array->size = DB_START_SIZE;
-		array->pointer = 0;
+	
+	array = malloc(sizeof(record_db_a));
+	
+	// Настроим начальное состояние базы.
+	array->db = malloc(sizeof(record_t) * DB_START_SIZE);
+	array->size = DB_START_SIZE;
+	array->pointer = 0;
 
-		*base = array;
+	*base = array;
 }
 
 
@@ -26,7 +30,6 @@ uint8_t read_db(rn_t number, record_t * note, record_db_a * base) {
 }
 
 
-
 /* ######################################  Количество записей в базе  ############################################ */
 /*
 Возвращает количество записей в базе
@@ -35,9 +38,6 @@ rn_t amount_db(record_db_a * base) {
 	return	amount_db_arr(base);
 
 }
-
-
-
 
 
 /* ######################################  Запись в базу  ############################################ */
@@ -57,8 +57,6 @@ uint8_t write_db(record_t note, rn_t * number, record_db_a * base) {
 	
 
 }
-
-
 
 
 /* ######################################  Замена записи  ############################################ */
@@ -81,7 +79,6 @@ uint8_t replace_db(record_t note, rn_t number, record_db_a * base) {
 
 
 /* ######################################  Вставка в базу  ############################################ */
-
 /*
 Вставка записи note в позицию number в соответствии со спецификатором.
 0 - перед элементом number
@@ -102,6 +99,7 @@ uint8_t insert_db(record_t note, rn_t number, insert_t specifier, record_db_a * 
 
 
 /* ######################################  Удаление элементов  ############################################ */
+
 uint8_t delite_db(rn_t number, insert_t specifier, record_db_a * base) {
 
 	if (delite_db_arr(base, number, specifier)) {

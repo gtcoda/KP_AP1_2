@@ -15,7 +15,7 @@
 #define COUNT_LINE_DB_ACTIVE 3 // Количество строк занимаемое именем активной базы.
 #define COLUMN_LINE_DB_ACTIVE 0 // Начальная колонка строк с именем активной базы. 
 
-#define COUNT_LINE_MENU 12 // Количество строк занятых менюшкой.
+#define COUNT_LINE_MENU 13 // Количество строк занятых менюшкой.
 #define COLUMN_LINE_MENU 1 // Начальная колонка строк меню.
 
 #define DB_ACTIVE_WORK (COUNT_LINE_VELCOM) // Позиция занимаемая именем активной базы
@@ -32,7 +32,12 @@
 #define MENU_VIEW "Просмотр базы.\n"
 #define MENU_AMOUNT "Просмотр количества элементов в базе.\n"
 #define MENU_SORT "Сортировка.\n"
+#define MENU_DIAP "Просмотр элементов в диапазоне.\n"
 #define MENU_EXIT "Выход.\n"
+
+#define MENU_SURNAME "SURNAME"
+#define MENU_HEIGHT "HEIGHT"
+#define MENU_WEIGHT "WEIGHT"
 
 
 int menu(int x, int y, char* items[], int cnt);

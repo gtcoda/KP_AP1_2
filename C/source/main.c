@@ -14,14 +14,15 @@ void main(void) {
 
 	char* items[] = {
 					MENU_CREATE_DB,
-					MENU_ADD,
-					MENU_REPLACE,
 					MENU_READ,
 					MENU_WRITE,
+					MENU_VIEW,
+					MENU_ADD,
+					MENU_REPLACE,
 					MENU_INSERT,
 					MENU_DELITE,
-					MENU_VIEW,
 					MENU_AMOUNT,
+					MENU_DIAP,
 					MENU_SORT,
 					MENU_EXIT
 	};
@@ -85,6 +86,10 @@ void main(void) {
 		}
 		else if (!strcmp(items[i], MENU_SORT)) {
 			sort();
+			continue;
+		}
+		else if (!strcmp(items[i], MENU_DIAP)) {
+			view_record_diap();
 			continue;
 		}
 		else if (!strcmp(items[i], MENU_EXIT)) {

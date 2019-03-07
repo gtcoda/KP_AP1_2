@@ -51,5 +51,6 @@ void replace(void);
 void insert(void);
 void delite(void);
 void sort(void);
+void view_record_diap(void);
 
 #endif 

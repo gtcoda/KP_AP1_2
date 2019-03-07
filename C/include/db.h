@@ -11,7 +11,7 @@
 
 #define DB "ARRAY" // LIST - св€зный список, ARRAY - массив
 #define SORT "BUBBLE" // BUBBLE - сортировка пузырьком
-#define SORT_FIELD "SURNAME" // SURNAME, HEIGHT, WEIGHT ѕоле сортировки
+//#define SORT_FIELD "SURNAME" // SURNAME, HEIGHT, WEIGHT ѕоле сортировки
 
 #define ERROR_DB "Not model DB!"
 

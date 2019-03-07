@@ -356,9 +356,9 @@ void sort(void) {
 	sort_t column;
 	printf("Column for sort: \n");
 
-	char * items[] = {	"SURNAME.",
-						"HEIGHT.",
-						"WEIGHT."
+	char * items[] = {	MENU_SURNAME,
+						MENU_HEIGHT,
+						MENU_WEIGHT
 	};
 	
 	column = menu(1, LINE_WORK + 1, items, sizeof(items) / sizeof(items[0]));
@@ -375,6 +375,65 @@ void sort(void) {
 }
 
 
+/*
+Выводит на экран базу данных в диапазоне с вичисление минимума максимума и среднего. 
+*/
+void view_record_diap(void){
+	rn_t begin, end;
+	rn_t count = 0;
+	float midle = 0;
+	sort_t column;
+	char str[NAME_SIZE];
+	
+	printf("Выберите поле:\n");
+	char * items[] = {	MENU_HEIGHT,
+						MENU_WEIGHT
+	};
+	
+	column = menu(0, LINE_WORK + 1, items, sizeof(items) / sizeof(items[0]));
+	clear(0, LINE_WORK);
+	
+	
+	
+	printf("Введите диапазон.\n");
+	printf("Начало диапазона: ");
+	mfgets(str, sizeof(str), stdin);
+	begin = (uint16_t)strtol(str, NULL, 10);
+	
+	printf("Конец диапазона: ");
+	mfgets(str, sizeof(str), stdin);
+	end = (uint16_t)strtol(str, NULL, 10);
+
+
+	for (rn_t i = 0; i < amount_db(active_db); i++) {
+		record_t rec;
+		read_db(i, &rec, active_db);
+		switch (column){
+			case 0 :{
+				if(rec.height<end && rec.height>begin){
+					midle = midle + rec.height;
+					count++;
+					printf("%-2u |%-10s| %-10u| %-10.2f \n\r", i, rec.surname, rec.height, rec.weight);
+				}
+			}
+			
+			case 1 :{
+				if(rec.weight<end && rec.weight>begin){
+					midle =+ rec.weight;
+					count++;
+					printf("%-2u |%-10s| %-10u| %-10.2f \n\r", i, rec.surname, rec.height, rec.weight);
+				}
+			} 
+			
+		}
+		
+	}
+	
+	midle = midle / count;
+
+	printf("Среднее по полю [%s]: .0%f \n", items[column], midle);
+
+}
 
 
 /*

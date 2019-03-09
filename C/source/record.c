@@ -6,6 +6,7 @@ char *filename = RECORD_FILES;
 void db_manager_add(char * name);
 void record_parsing(char * string);
 void entry_record(record_t * note);
+void strncpy_s_m(char * dst, size_t len, char * src);
 char * trim(char *s);
 rn_t view_record_choice(void);
 
@@ -112,9 +113,9 @@ void record_parsing(char * string) {
 
 	for (uint8_t i = 0; m != NULL; i++) {
 		switch (i) {
-		case 0: strcpy_s(surname, NAME_SIZE, m); break;
-		case 1: strcpy_s(height, NAME_SIZE, m); break;
-		case 2: strcpy_s(weight, NAME_SIZE, m); break;
+		case 0: strncpy_s_m(surname, NAME_SIZE, m); break;
+		case 1: strncpy_s_m(height, NAME_SIZE, m); break;
+		case 2: strncpy_s_m(weight, NAME_SIZE, m); break;
 		}
 		m = strtok(NULL, ":");
 	}
@@ -597,6 +598,14 @@ char * trim(char *s) {
 	return s;
 }
 
+/*
+Копирует нуль-терминированую строку в буфер ограниченого размера.
+Функция гарантирует завершение строки dst нуль-терминатором.
+*/
+void strncpy_s_m(char * dst, size_t len, char * src){
+	strncpy(dst, src, len);
+	dst[len - 1] = "\0";
+}
 
 
 

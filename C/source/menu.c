@@ -6,7 +6,7 @@ static void textcolor(short f, short b);
 static char getch();
 
 
-// X - строка, Y - столбец.
+// X - столбец, Y - строка.
 void clear(int x, int y) {
 	COORD topLeft = { x, y };
 	HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);

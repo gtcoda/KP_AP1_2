@@ -132,7 +132,7 @@ void record_parsing(char * string) {
 
 
 
-void write_file() {
+void write_file(void) {
 	// Проверим наличие базы. 
 	if (active_db == NULL) { db_manager(); }
 
@@ -174,7 +174,7 @@ void write_file() {
 
 
 
-void read_file() {
+void read_file(void) {
 	// Проверим наличие базы. 
 	if (active_db == NULL) { db_manager(); }
 
@@ -217,7 +217,7 @@ void read_file() {
 	fclose(fp);
 }
 
-void add_record() {
+void add_record(void) {
 	// Проверим наличие базы. 
 	if (active_db == NULL) { db_manager(); }
 
@@ -394,7 +394,7 @@ void sort(void) {
 
 	if (sort_db(column, active_db)) {
 		printf("Сортируем по полю [%s] по возрастанию. \n", items[column]);
-		view_record(active_db);
+		view_record();
 	}
 	else {
 		printf("Sort falled! \n");

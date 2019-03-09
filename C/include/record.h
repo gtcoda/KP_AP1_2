@@ -42,16 +42,17 @@ void db_manager(void);
 void db_manager_active_name(char * db_name);
 
 
-void add_record();
-void write_file();
-char * mfgets(char * string, int num, FILE * filestream);
+void add_record(void);
+void write_file(void);
 void view_record();
-void read_file();
+void read_file(void);
 void amount(void);
 void replace(void);
 void insert(void);
 void delite(void);
 void sort(void);
 void view_record_diap(void);
+
+char * mfgets(char * string, int num, FILE * filestream);
 
 #endif 

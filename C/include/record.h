@@ -11,6 +11,7 @@
 #include <stdint.h>
 #include <string.h>
 #include "db.h"
+#include "menu.h"
 
 #define VIEW_HEAD "№  | Surname | Height | Weight \n\r"
 #define SEPARATOR ":"
@@ -19,8 +20,12 @@
 #define DB_SIZE 50
 #define NAME_SIZE 40
 #define STR_SIZE 100 // максимальная длинна вводимой строки
+#define MAX_DB 5
 
-
+typedef struct {
+	char name_db[NAME_SIZE];
+	db_union pointer_db;
+}db;
 
 
 

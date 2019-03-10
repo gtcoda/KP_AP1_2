@@ -1,115 +1,24 @@
 #include <stdlib.h>
 #include <stdint.h>
-#include <windows.h>
-
+#include "../include/menu.h"
 #include "../include/record.h"
 
-char welcome[] = ""
-"KP_AP1_2 \n"
-"Для вызова справки наберите help. \n"
+char velcome[] = "KP_AP1_2 \n"
 "\n";
-
-char help[] = ""
-"Commands: \n"
-"add		Добавить запись. \n"
-"fix		Заменить запись. \n"
-"insert		Вставка записи. \n"
-"read		Прочитать и файл в базу. \n"
-"write		Записать базу в файл. \n"
-"view		Просмотр базы. \n"
-"amount		Просмотр количества элементов в базе. \n"
-"exit		Выход. \n"
-"help		Вызов справки. \n"
-"\n";
-
-void clear(int X, int Z) {
-	COORD topLeft = { X, Z };
-	HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
-	CONSOLE_SCREEN_BUFFER_INFO screen;
-	DWORD written;
-
-	GetConsoleScreenBufferInfo(console, &screen);
-	FillConsoleOutputCharacterA(
-		console, ' ', screen.dwSize.X * screen.dwSize.Y, topLeft, &written
-	);
-	FillConsoleOutputAttribute(
-		console, FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_BLUE,
-		screen.dwSize.X * screen.dwSize.Y, topLeft, &written
-	);
-	SetConsoleCursorPosition(console, topLeft);
-}
+#define COUNT_LINE_VELCOM 2 // Количество строк занимаемое шапкой.
 
 
-
-
-
-
-void gotoxy(int x, int y) {
-	COORD coord = { x, y };
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
-}
-
-void textcolor(short f, short b) {
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), f | (b << 4));
-}
-
-char getch() {
-	HANDLE hstdin = GetStdHandle(STD_INPUT_HANDLE);
-	INPUT_RECORD rec;
-	DWORD event;
-
-	FlushConsoleInputBuffer(hstdin);
-	while (ReadConsoleInputA(hstdin, &rec, 1, &event)) {
-		if ((rec.EventType == KEY_EVENT)
-			&& (rec.Event.KeyEvent.bKeyDown)) {
-			return rec.Event.KeyEvent.wVirtualKeyCode;
-		}
-	}
-	return EOF;
-}
-
-int menu(int x, int y, const char* items[], int cnt) {
-	const short COLOR_FG = 7;
-	const short COLOR_BG = 0;
-
-	int i;
-	char ch;
-
-	textcolor(COLOR_FG, COLOR_BG);
-	for (i = 0; i < cnt; ++i) {
-		gotoxy(x, y + i);
-		printf("%s", items[i]);
-	}
-	i = 0;
-	gotoxy(x, y); textcolor(COLOR_BG, COLOR_FG);
-	printf("%s", items[i]);
-
-	while (((ch = getch()) != EOF) && (ch != VK_RETURN)) {
-		gotoxy(x, y + i); textcolor(COLOR_FG, COLOR_BG);
-		printf("%s", items[i]);
-		switch (ch) {
-		case VK_ESCAPE:
-			return 0;
-		case VK_UP:
-			i = (i == 0) ? (cnt - 1) : (i - 1);
-			break;
-		case VK_DOWN:
-			i = (i == cnt - 1) ? 0 : (i + 1);
-			break;
-		}
-		gotoxy(x, y + i); textcolor(COLOR_BG, COLOR_FG);
-		printf("%s", items[i]);
-	}
-	textcolor(COLOR_FG, COLOR_BG);
-
-	return i + 1;
-}
-
-
-
-
-
-
+#define MENU_CREATE_DB "\n Управление базами. "
+#define MENU_ADD "\n Добавить запись. "
+#define MENU_REPLACE "\n Заменить запись. "
+#define MENU_READ "\n Прочитать файл в базу. "
+#define MENU_WRITE	"\n Записать базу в файл. "
+#define MENU_INSERT "\n Вставка записи. "
+#define MENU_DELITE "\n Удалить записи. "
+#define MENU_VIEW "\n Просмотр базы. "
+#define MENU_AMOUNT "\n Просмотр количества элементов в базе. "
+#define MENU_SORT "\n Сортировка. "
+#define MENU_EXIT "\n Выход. "
 
 
 
@@ -117,84 +26,82 @@ int menu(int x, int y, const char* items[], int cnt) {
 
 
 void main(void) {
+
+	int str = sizeof(record_t);
+	int ar = sizeof(record_db_a);
+	int li = sizeof(record_db_l);
+	
+
+
 	system("chcp 1251"); // переходим в консоли на русский язык
 	char command[40];
-	printf(welcome);
+	printf(velcome);
 
-	const char* items[] = { "\n Добавить запись. ",
-							"\n Заменить запись. ",
-							"\n Прочитать и файл в базу. ",
-							"\n Записать базу в файл. ",
-							"\n Вставка записи. ",
-							"\n Удалить записи. ",
-							"\n Просмотр базы. ",
-							"\n Просмотр количества элементов в базе. ",
-							"\n Сортировка. ",
-							"\n Выход. "
-							
+	const char* items[] = {
+							MENU_CREATE_DB,
+							MENU_ADD,
+							MENU_REPLACE,
+							MENU_READ,
+							MENU_WRITE,
+							MENU_INSERT,
+							MENU_DELITE,
+							MENU_VIEW,
+							MENU_AMOUNT,
+							MENU_SORT,
+							MENU_EXIT
 	};
-
 
 	while (1) {
 		int i = 0;
 
-		i = menu(3, 3, items, 9);
+		i = menu(3, 1, items, sizeof(items)/sizeof(items[0]));
 
-		gotoxy(1, 14);
-		printf("Return: %d\n\n", i);
-		clear(1, 15);
+		// + число - количество строк в приветствии
+		clear(0, sizeof(items) / sizeof(items[0])+2);
+		
+		printf("======================================================== \n");
 
-		switch (i) {
-		case 1: add_record(); break;
-		case 2: replace(); break;
-		case 3: read_file(); break;
-		case 4: write_file(); break;
-		case 5: insert(); break;
-		case 6: delite(); break;
-		case 7: view_record(); break;
-		case 8: amount(); break;
-		case 9: sort(); break;
-		}
+		strcpy_s(&command, 40,items[i]);
 
-/*		printf("Command : ");
-		mfgets(command, sizeof(command), stdin);
-		if (!strcmp(command, "add")) {
+		if (!strcmp(command, MENU_ADD)) {
 			add_record();
 		}
-		else if (!strcmp(command, "fix")) {
+		else if (!strcmp(command, MENU_REPLACE)) {
 			replace();
 		}
-		else if (!strcmp(command, "read")) {
+		else if (!strcmp(command, MENU_CREATE_DB)) {
+			db_manager();
+		}
+		else if (!strcmp(command, MENU_READ)) {
 			read_file();
 		}
-		else if (!strcmp(command, "write")) {
+		else if (!strcmp(command, MENU_WRITE)) {
 			write_file();
 		}
-		else if (!strcmp(command, "insert")) {
+		else if (!strcmp(command, MENU_INSERT)) {
 			insert();
 		}
-		else if (!strcmp(command, "delite")) {
+		else if (!strcmp(command, MENU_DELITE)) {
 			delite();
 		}
-		else if (!strcmp(command, "view")) {
+		else if (!strcmp(command, MENU_VIEW)) {
 			view_record();
 		}
-		else if (!strcmp(command, "amount")) {
+		else if (!strcmp(command, MENU_AMOUNT)) {
 			amount();
 		}
-		else if (!strcmp(command, "sort")) {
+		else if (!strcmp(command, MENU_SORT)) {
 			sort();
 		}
-		else if (!strcmp(command, "help")) {
-			printf(help);
-		}
-		else if (!strcmp(command, "exit")) {
+		else if (!strcmp(command, MENU_EXIT)) {
 			break;
 		}
 		else {
 			printf("command %s not found! \n", command);
 		}
-		*/
+		
+		clear(0, COUNT_LINE_VELCOM);
+
 	}
 
 }

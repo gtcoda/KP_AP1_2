@@ -15,7 +15,7 @@
 
 #define ERROR_DB "Not model DB!"
 
-#define DB_SIZE 50
+#define DB_START_SIZE 10 // начальный размер базы
 #define NAME_SIZE 40
 typedef uint16_t rn_t; // тип номера записи в базе
 
@@ -26,7 +26,8 @@ typedef struct {
 } record_t;
 
 typedef struct {
-	record_t db[DB_SIZE];
+	record_t * db[DB_START_SIZE];
+	size_t size; // “екущий размер 
 	rn_t pointer; // Ќомер свободной €чейки
 } record_db_a;
 
@@ -58,16 +59,24 @@ typedef enum {
 	WEIGHT
 } sort_t;
 
-typedef uint16_t rn_t; // тип номера записи в базе
 
 
-uint8_t write_db(record_t note, rn_t * number);
-uint8_t read_db(rn_t number, record_t * note);
-rn_t amount_db();
-uint8_t replace_db(record_t note, rn_t number);
-uint8_t insert_db(record_t note, rn_t number, insert_t specifier);
-uint8_t delite_db(rn_t number, insert_t specifier);
-uint8_t sort_db(sort_t column);
+typedef union {
+	record_db_a * array;
+	record_db_l * list;
+} db_union;
+
+
+
+void create_db(db_union * base);
+
+uint8_t write_db(record_t note, rn_t * number, db_union * base);
+uint8_t read_db(rn_t number, record_t * note, db_union * base);
+rn_t amount_db(db_union * base);
+uint8_t replace_db(record_t note, rn_t number, db_union * base);
+uint8_t insert_db(record_t note, rn_t number, insert_t specifier, db_union * base);
+uint8_t delite_db(rn_t number, insert_t specifier, db_union * base);
+uint8_t sort_db(sort_t column, db_union * base);
 
 
 #endif

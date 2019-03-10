@@ -1,10 +1,83 @@
 #include "../include/record.h"
 
+
+
 char *filename = RECORD_FILES;
+void db_manager_add(void);
 void record_parsing(char * string);
 void entry_record(record_t * note);
 char * trim(char *s);
 
+
+
+struct {
+	db db_list[MAX_DB];
+	uint8_t count_db;
+}manager_db;
+
+db_union * active_db = NULL;
+
+// Управление базами данных
+void db_manager(void) {
+	// Нет ни одной базы. Создадим?
+	if (manager_db.count_db == 0) {
+		printf("Нет ни одной базы. Создадим! \n");
+		db_manager_add();
+	}
+	else {
+		char * items[MAX_DB+1];
+		uint8_t i;
+		const char *baseinsert = { "Добавить базу. \n" };
+		
+		clear(0, COUNT_LINE_VELCOM);
+
+		printf("Базы: \n");
+
+		for (i = 0; i < manager_db.count_db; i++) {
+			items[i] = malloc(NAME_SIZE);
+			strcpy(items[i], manager_db.db_list[i].name_db);
+		}
+		
+		items[i] = malloc(NAME_SIZE);
+		strcpy(items[i], baseinsert);
+		uint8_t bases = 0;
+		bases = menu(3, 3, items, manager_db.count_db+1);
+
+		// Требуют создать новую  базу
+		if (bases == i) {
+			db_manager_add();
+		}
+		else {
+			active_db = &manager_db.db_list[bases].pointer_db;
+		}
+		
+		// Почистим память!
+		for (uint8_t m = 0; m <= i; m++) {
+			free(items[m]);
+		}
+
+	}
+
+	clear(0, COUNT_LINE_VELCOM);
+}
+
+
+
+void db_manager_add(void) {
+	char db_name[NAME_SIZE];
+	printf("======================================================== \n");
+	// Получим имя базы.
+	printf("Введите имя базы: ");
+	mfgets(db_name, NAME_SIZE, stdin);
+	strcpy(&manager_db.db_list[ manager_db.count_db ].name_db, &db_name);
+	// Создадим новую базу.
+	create_db(&manager_db.db_list[ manager_db.count_db ].pointer_db);
+
+	// Сразу сделаем ее активной.
+	active_db = &manager_db.db_list[ manager_db.count_db ].pointer_db;
+
+	manager_db.count_db++;
+}
 
 void record_parsing(char * string) {
 	char surname[NAME_SIZE];
@@ -28,13 +101,16 @@ void record_parsing(char * string) {
 	record.height = (uint16_t)strtol(height, NULL, 10);
 	record.weight = strtof(weight, NULL);
 
-	write_db(record, NULL);
+	write_db(record, NULL, active_db);
 
 }
 
 
 
 void write_file() {
+	// Проверим наличие базы. 
+	if (active_db == NULL) { db_manager(); }
+
 	char filename[100];
 	rn_t count = 0;
 	printf("Input filename: ");
@@ -46,9 +122,9 @@ void write_file() {
 
 	if (fp != NULL) {
 
-		for (count = 0; count < amount_db(); count++) {
+		for (count = 0; count < amount_db(active_db); count++) {
 
-			if (read_db(count, &rec)) {
+			if (read_db(count, &rec, active_db)) {
 				char buf[100];
 				sprintf(buf, "%s %s %u %s %.2f \n", rec.surname, SEPARATOR, rec.height, SEPARATOR, rec.weight);
 				fputs(buf, fp);
@@ -69,6 +145,9 @@ void write_file() {
 
 
 void read_file() {
+	// Проверим наличие базы. 
+	if (active_db == NULL) { db_manager(); }
+
 	rn_t count = 0;
 	FILE *fp;
 	fp = fopen(filename, "r");
@@ -91,10 +170,13 @@ void read_file() {
 }
 
 void add_record() {
+	// Проверим наличие базы. 
+	if (active_db == NULL) { db_manager(); }
+
 	record_t record;
 	entry_record(&record);
 	
-	if ( write_db(record, NULL) ) {
+	if ( write_db(record, NULL, active_db) ) {
 		printf("Writing!\n");
 	}
 	else {
@@ -103,28 +185,22 @@ void add_record() {
 }
 
 
-char * mfgets(char * string, int num, FILE * filestream) {
-	char * res = fgets(string, NAME_SIZE, stdin);
-	char * ptr = NULL;
-	ptr = strchr(string, '\n');
-	if (ptr != NULL) {
-		*ptr = 0;
-	}
-	return res;
-}
 
 void view_record() {
+	// Проверим наличие базы. 
+	if (active_db == NULL) { db_manager(); }
+
 	system("chcp 1251"); // переходим в консоли на русский язык
 
-	if (amount_db() == 0) {// Нет ни одной записи
+	if (amount_db(active_db) == 0) {// Нет ни одной записи
 		printf("There is no record!\n");
 	}
 	else {
-		rn_t count = amount_db();
+		rn_t count = amount_db(active_db);
 		printf(VIEW_HEAD);
 		for (uint8_t i = 0; i <= count-1; i++) {
 			record_t rec;
-			read_db(i, &rec);
+			read_db(i, &rec, active_db);
 
 			printf("%-2u |%-10s| %-10u| %-10.2f", i, rec.surname, rec.height, rec.weight);
 			printf("\n\r");
@@ -136,6 +212,9 @@ void view_record() {
 Изменение записи
 */
 void replace(void) {
+	// Проверим наличие базы. 
+	if (active_db == NULL) { db_manager(); }
+
 	rn_t number = 0;
 	record_t record;
 	char str[STR_SIZE];
@@ -145,13 +224,16 @@ void replace(void) {
 
 	entry_record(&record);
 
-	replace_db(record, number);
+	replace_db(record, number, active_db);
 }
 
 /*
 Добавление записи
 */
 void insert(void) {
+	// Проверим наличие базы. 
+	if (active_db == NULL) { db_manager(); }
+
 	rn_t number = 0;
 	insert_t specifier;
 	record_t record;
@@ -168,11 +250,14 @@ void insert(void) {
 
 	entry_record(&record);
 
-	insert_db(record, number, specifier);
+	insert_db(record, number, specifier, active_db);
 }
 
 
 void delite(void) {
+	// Проверим наличие базы. 
+	if (active_db == NULL) { db_manager(); }
+
 	rn_t number = 0;
 	insert_t specifier;
 	char str[STR_SIZE];
@@ -187,7 +272,7 @@ void delite(void) {
 	printf("2 - ONE; \n");
 	mfgets(str, sizeof(str), stdin);
 	specifier = (insert_t)strtol(str, NULL, 10);
-	delite_db(number, specifier);
+	delite_db(number, specifier, active_db);
 
 }
 
@@ -212,11 +297,17 @@ void entry_record(record_t * note) {
 }
 
 void amount(void) {
-	printf("Amount %u record.\n", amount_db() );
+	// Проверим наличие базы. 
+	if (active_db == NULL) { db_manager(); }
+
+	printf("Amount %u record.\n", amount_db (active_db) );
 }
 
 
 void sort(void) {
+	// Проверим наличие базы. 
+	if (active_db == NULL) { db_manager(); }
+
 	sort_t column;
 	char str[STR_SIZE];
 
@@ -228,9 +319,9 @@ void sort(void) {
 	column = (insert_t)strtol(str, NULL, 10);
 
 
-	if (sort_db(column)) {
+	if (sort_db(column, active_db)) {
 		printf("Sort end! \n");
-		view_record();
+		view_record(active_db);
 	}
 	else {
 		printf("Sort falled! \n");
@@ -267,4 +358,17 @@ char * trim(char *s) {
 	}
 
 	return s;
+}
+
+
+
+
+char * mfgets(char * string, int num, FILE * filestream) {
+	char * res = fgets(string, NAME_SIZE, stdin);
+	char * ptr = NULL;
+	ptr = strchr(string, '\n');
+	if (ptr != NULL) {
+		*ptr = 0;
+	}
+	return res;
 }

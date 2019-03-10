@@ -9,13 +9,9 @@
 #include <string.h>
 
 
-#define DB "ARRAY" // LIST - связный список, ARRAY - массив
 #define SORT "BUBBLE" // BUBBLE - сортировка пузырьком
-//#define SORT_FIELD "SURNAME" // SURNAME, HEIGHT, WEIGHT Поле сортировки
 
-#define ERROR_DB "Not model DB!"
-
-#define DB_START_SIZE 10 // начальный размер базы
+#define DB_START_SIZE 10 // Начальный размер базы
 #define NAME_SIZE 40
 
 typedef uint16_t rn_t; // тип номера записи в базе

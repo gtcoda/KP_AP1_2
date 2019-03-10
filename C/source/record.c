@@ -2,16 +2,15 @@
 
 
 
-char *filename = RECORD_FILES;
-void db_manager_add(char * name);
-void record_parsing(char * string);
-void entry_record(record_t * note);
-void strncpy_s_m(char * dst, size_t len, char * src);
-char * trim(char *s);
-rn_t view_record_choice(void);
+static void db_manager_add(char * name);
+static void record_parsing(char * string);
+static void entry_record(record_t * note);
+static void strncpy_s_m(char * dst, size_t len, char * src);
+static char * trim(char *s);
+static rn_t view_record_choice(void);
 
-void view_record_diap_height(void);
-void view_record_diap_weight(void);
+static void view_record_diap_height(void);
+static void view_record_diap_weight(void);
 
 
 struct {
@@ -21,7 +20,9 @@ struct {
 
 record_db_a * active_db = NULL;
 
-// Управление базами данных
+/*
+ Создание и выбор базы данных.
+*/
 void db_manager(void) {
 
 		char * items[MAX_DB+1];
@@ -72,8 +73,7 @@ void db_manager(void) {
 
 
 /*
-
-
+Создание новой бызы данных.
 */
 void db_manager_add(char * name) {
 	
@@ -131,7 +131,9 @@ void record_parsing(char * string) {
 }
 
 
-
+/*
+Записать базу в файл.
+*/
 void write_file(void) {
 	// Проверим наличие базы. 
 	if (active_db == NULL) { db_manager(); }
@@ -152,7 +154,7 @@ void write_file(void) {
 
 	if (fp != NULL) {
 
-		for (count = 0; count < amount_db(active_db); count++) {
+		for (rn_t len = amount_db(active_db), count = 0; count < len; count++) {
 
 			if (read_db(count, &rec, active_db)) {
 				char buf[100];
@@ -174,6 +176,9 @@ void write_file(void) {
 
 
 
+/*
+Прочитать, распарсить и добавить содержимое файла в базу. 
+*/
 void read_file(void) {
 	// Проверим наличие базы. 
 	if (active_db == NULL) { db_manager(); }
@@ -217,6 +222,10 @@ void read_file(void) {
 	fclose(fp);
 }
 
+
+/*
+Добавление новой записи в активную базу.
+*/
 void add_record(void) {
 	// Проверим наличие базы. 
 	if (active_db == NULL) { db_manager(); }
@@ -233,18 +242,20 @@ void add_record(void) {
 }
 
 
-
-void view_record() {
+/*
+Вывести содержимое базы данных в виде таблицы.
+*/
+void view_record(void) {
 	// Проверим наличие базы. 
 	if (active_db == NULL) { db_manager(); }
 
 
-	if (amount_db(active_db) == 0) {// Нет ни одной записи
+	if (amount_db(active_db) == 0) {// Нет ни одной записи.
 		printf("There is no record!\n");
 	}
 	else {
 		rn_t count = amount_db(active_db);
-		printf(VIEW_HEAD);
+		printf(VIEW_HEAD); // Выводим шапку таблицы.
 		for (uint8_t i = 0; i <= count-1; i++) {
 			record_t rec;
 			read_db(i, &rec, active_db);
@@ -317,7 +328,9 @@ void insert(void) {
 	view_record();
 }
 
-
+/*
+Удаление записи.
+*/
 void delite(void) {
 	// Проверим наличие базы. 
 	if (active_db == NULL) { db_manager(); }
@@ -368,6 +381,9 @@ void entry_record(record_t * note) {
 	note->weight = strtof(weight, NULL);
 }
 
+/*
+Отобразить количество элементов в базе.
+*/
 void amount(void) {
 	// Проверим наличие базы. 
 	if (active_db == NULL) { db_manager(); }
@@ -376,6 +392,9 @@ void amount(void) {
 }
 
 
+/*
+Выбор условий сортировки с последующей сортировкой.
+*/
 void sort(void) {
 	// Проверим наличие базы. 
 	if (active_db == NULL) { db_manager(); }
@@ -403,7 +422,7 @@ void sort(void) {
 
 
 /*
-Выводит на экран базу данных в диапазоне с вичисление минимума максимума и среднего. 
+Выводит на экран базу данных в диапазоне с вычислением минимума максимума по базе и среднего по полю. 
 */
 void view_record_diap(void){
 	sort_t column;
@@ -424,8 +443,10 @@ void view_record_diap(void){
 	}
 }
 
+
 void view_record_diap_height(void) {
-	rn_t begin, end, count = 0, min=0, max=0;
+	rn_t begin = 0, end = 0, min=0, max=0;
+	rn_t count = 0; 
 	uint32_t midle = 0;
 	char str[NAME_SIZE];
 
@@ -440,7 +461,7 @@ void view_record_diap_height(void) {
 
 
 
-	for (rn_t i = 0; i < amount_db(active_db); i++) {
+	for (rn_t i = 0, c = amount_db(active_db); i < c; i++) {
 		record_t rec, rec_min_max;
 		read_db(i, &rec, active_db);
 
@@ -482,7 +503,8 @@ void view_record_diap_height(void) {
 
 void view_record_diap_weight(void) {
 
-	rn_t count = 0, min = 0, max = 0;
+	rn_t min = 0, max = 0;
+	rn_t count = 0;
 	float begin = 0, end = 0, midle = 0;
 	char str[NAME_SIZE];
 
@@ -497,7 +519,7 @@ void view_record_diap_weight(void) {
 
 
 
-	for (rn_t i = 0; i < amount_db(active_db); i++) {
+	for (rn_t i = 0, c = amount_db(active_db); i < c; i++) {
 		record_t rec, rec_min_max;
 		read_db(i, &rec, active_db);
 
@@ -543,9 +565,10 @@ rn_t view_record_choice(void) {
 	// Создадим список 
 	char ** items;
 	rn_t i = 0;
+	rn_t count = amount_db(active_db);
 	items = (char **)malloc(sizeof(char *) * amount_db(active_db));
 
-	for (i = 0; i < amount_db(active_db); i++) {
+	for (i = 0; i < count; i++) {
 		char str[100];
 		record_t rec;
 		read_db(i, &rec, active_db);
@@ -557,7 +580,7 @@ rn_t view_record_choice(void) {
 	i = menu(1, LINE_WORK, items, amount_db(active_db));
 
 	// Почистим память!
-	for (uint8_t m = 0; m < amount_db(active_db); m++) {
+	for (uint8_t m = 0; m < count; m++) {
 		free(items[m]);
 	}
 	free(items);
@@ -574,24 +597,25 @@ rn_t view_record_choice(void) {
 */
 char * trim(char *s) {
 	size_t i = 0, j;
+	size_t len = strlen(s);
 	
 	// Удаляем пробелы и tab с начала строки
 	while ((s[i] == ' ') || (s[i] == '\t')) {
 		i++;
 	}
 	if (i > 0) {
-		for (j = 0; j < strlen(s); j++) {
+		for (j = 0; j < len; j++) {
 			s[j] = s[j + i];
 		}
 		s[j] = '\0';
 	}
 
 	// удаляем пробелы и табы с конца строки:
-	i = strlen(s) - 1;
+	i = len - 1;
 	while ((s[i] == ' ') || (s[i] == '\t')) {
 		i--;
 	}
-	if (i < (strlen(s) - 1)) {
+	if (i < (len - 1)) {
 		s[i + 1] = '\0';
 	}
 

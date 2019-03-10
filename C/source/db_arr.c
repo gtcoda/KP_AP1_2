@@ -6,20 +6,16 @@
 */
 uint8_t read_db_arr(rn_t number, record_t * note, record_db_a * base) {
 
+	if (number > amount_db_arr(base)){ return 0; }
+
 	strcpy(note->surname, base->db[number].surname);
 	note->height = base->db[number].height;
 	note->weight = base->db[number].weight;
 
 	return 1;
+	
 }
 
-
-/*
-Возвращает количество элементов в массиве записей *base
-*/
-rn_t amount_db_arr(record_db_a *base) {
-	return base->pointer;
-}
 
 
 /*
@@ -29,11 +25,15 @@ rn_t amount_db_arr(record_db_a *base) {
 uint8_t write_db_arr(record_t note, record_db_a * base, rn_t * number) {
 	// У нас нет памяти 
 	if (base->pointer == base->size - 2) {
-
+		record_t * new_block;
 		// Увеличим память выделеную под массив.
 		// И изменим ссылку на базу. Т.к указатель может измениться.
-		base->db = realloc( base->db, (base->size + DB_START_SIZE) * sizeof(record_t) );
-
+		new_block = realloc( base->db, (base->size + DB_START_SIZE) * sizeof(record_t) );
+		
+		if(new_block == NULL){ // Память не выделена
+			return 0;
+		} 
+		base->db = new_block;
 		// Увеличим счетчик размера массива.
 		base->size = base->size + DB_START_SIZE;
 	}
@@ -51,7 +51,17 @@ uint8_t write_db_arr(record_t note, record_db_a * base, rn_t * number) {
 	return 1;
 }
 
-// Замена 
+/*
+Возвращает количество элементов в массиве записей *base.
+*/
+rn_t amount_db_arr(record_db_a *base) {
+	return base->pointer;
+}
+
+
+/*
+Заменяет запись number в базе *base записью note
+*/
 uint8_t replace_db_arr(record_t note, record_db_a * base, rn_t number) {
 	if (number < base->pointer) {
 		strcpy(base->db[number].surname, note.surname);
@@ -64,7 +74,9 @@ uint8_t replace_db_arr(record_t note, record_db_a * base, rn_t number) {
 
 
 
-
+/*
+Вставляет запись note в базу *base относительно number в соответствии со specifier.
+*/
 uint8_t insert_db_arr(record_t note, record_db_a * base, rn_t number, insert_t specifier) {
 	// Перед выбраным элементом
 	if (specifier == BEFORE) {
@@ -101,9 +113,11 @@ uint8_t insert_db_arr(record_t note, record_db_a * base, rn_t number, insert_t s
 	return 0;
 }
 
-
-uint8_t delite_db_arr(record_db_a * base, rn_t number, insert_t specirier) {
-	if (specirier == ONE) {
+/*
+Удаление записи с номером number из бызы *base в соответствии со specifier.
+*/
+uint8_t delite_db_arr(record_db_a * base, rn_t number, insert_t specifier) {
+	if (specifier == ONE) {
 		if (number < base->pointer) {
 			for (rn_t i = number; i < base->pointer; i++) {
 				//base->db[i] = base->db[i + 1];
@@ -116,7 +130,7 @@ uint8_t delite_db_arr(record_db_a * base, rn_t number, insert_t specirier) {
 		}
 	}
 
-	if (specirier == BEFORE) {
+	if (specifier == BEFORE) {
 		if (number < base->pointer) {
 
 			for (uint8_t i = 0; i < ( base->pointer - number - 1) ; i++) {
@@ -131,7 +145,7 @@ uint8_t delite_db_arr(record_db_a * base, rn_t number, insert_t specirier) {
 		}
 	}
 	
-	if (specirier == AFTER) {
+	if (specifier == AFTER) {
 		if (number < base->pointer) {
 			base->pointer = number;
 			return 1;
@@ -143,7 +157,9 @@ uint8_t delite_db_arr(record_db_a * base, rn_t number, insert_t specirier) {
 
 
 
-
+/*
+Сортировка базы *base по колонке column.
+*/
 uint8_t sort_db_arr(record_db_a * base, sort_t column) {
 	if (SORT == "BUBBLE") {
 		return sort_bubble_db_arr(base, column);
@@ -162,7 +178,7 @@ uint8_t sort_bubble_db_arr(record_db_a * base, sort_t column) {
 	do {
 		flag = 0;
 		
-		for (rn_t i = 0; i < base->pointer - 1; i++) {
+		for (rn_t i = 0; i < (base->pointer - 1) ; i++) {
 			// Сортируем по полю "HEIGHT"
 			if ( column == HEIGHT && 
 				 base->db[i].height > base->db[i + 1].height ) {

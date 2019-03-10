@@ -36,8 +36,11 @@ uint8_t read_db(rn_t number, record_t * note, record_db_a * base) {
 */
 rn_t amount_db(record_db_a * base) {
 	return	amount_db_arr(base);
-
 }
+
+/*
+Возвращает индекс последнего элемента
+*/
 
 
 /* ######################################  Запись в базу  ############################################ */

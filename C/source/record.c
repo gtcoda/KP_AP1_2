@@ -190,7 +190,6 @@ void view_record() {
 	// ѕроверим наличие базы. 
 	if (active_db == NULL) { db_manager(); }
 
-	system("chcp 1251"); // переходим в консоли на русский €зык
 
 	if (amount_db(active_db) == 0) {// Ќет ни одной записи
 		printf("There is no record!\n");

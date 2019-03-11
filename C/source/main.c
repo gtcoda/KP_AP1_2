@@ -1,39 +1,22 @@
 #include <stdlib.h>
 #include <stdint.h>
+#include <locale.h>
 #include "../include/menu.h"
 #include "../include/record.h"
 
 char velcome[] = "KP_AP1_2 \n"
 "\n";
-#define COUNT_LINE_VELCOM 2 // Количество строк занимаемое шапкой.
-
-
-#define MENU_CREATE_DB "\n Управление базами. "
-#define MENU_ADD "\n Добавить запись. "
-#define MENU_REPLACE "\n Заменить запись. "
-#define MENU_READ "\n Прочитать файл в базу. "
-#define MENU_WRITE	"\n Записать базу в файл. "
-#define MENU_INSERT "\n Вставка записи. "
-#define MENU_DELITE "\n Удалить записи. "
-#define MENU_VIEW "\n Просмотр базы. "
-#define MENU_AMOUNT "\n Просмотр количества элементов в базе. "
-#define MENU_SORT "\n Сортировка. "
-#define MENU_EXIT "\n Выход. "
 
 
 
 
 
 
-void main(void) {
 
-	int str = sizeof(record_t);
-	int ar = sizeof(record_db_a);
-	int li = sizeof(record_db_l);
-	
+void main(void) {	
 
-
-	system("chcp 1251"); // переходим в консоли на русский язык
+	//system("chcp 1251"); // переходим в консоли на русский язык
+	setlocale(LC_ALL, "Rus");
 	char command[40];
 	printf(velcome);
 
@@ -53,6 +36,8 @@ void main(void) {
 
 	while (1) {
 		int i = 0;
+
+		//clear(0, COUNT_LINE_VELCOM);
 
 		i = menu(3, 1, items, sizeof(items)/sizeof(items[0]));
 
@@ -100,8 +85,7 @@ void main(void) {
 			printf("command %s not found! \n", command);
 		}
 		
-		clear(0, COUNT_LINE_VELCOM);
-
+		
 	}
 
 }

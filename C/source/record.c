@@ -73,7 +73,7 @@ void db_manager(void) {
 
 
 /*
-Создание новой бызы данных.
+Создание новой базы данных.
 */
 void db_manager_add(char * name) {
 	
@@ -100,7 +100,7 @@ void db_manager_active_name(char * db_name) {
 		}
 	}
 	
-	strcpy(db_name, "none");
+	strcpy(db_name, MESSAGE_NO_BASE);
 	return;
 }
 
@@ -157,7 +157,7 @@ void write_file(void) {
 
 	if (fp != NULL) {
 
-		for (rn_t len = amount_db(active_db), count = 0; count < len; count++) {
+		for (rn_t len = amount_db(active_db); count < len; count++) {
 
 			if (read_db(count, &rec, active_db)) {
 				char buf[100];
@@ -242,6 +242,7 @@ void add_record(void) {
 	else {
 		printf("Write error!\n");
 	}
+	view_record();
 }
 
 

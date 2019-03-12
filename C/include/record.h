@@ -13,7 +13,7 @@
 #include "db.h"
 #include "menu.h"
 
-#define DB_DAFAULT_NAME "default"
+
 #define DB_DEFAULT_CREATE "CREATE DB " DB_DAFAULT_NAME
 
 #define VIEW_HEAD "¹  | Surname	| Height	| Weight \n\r"

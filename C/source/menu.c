@@ -1,7 +1,7 @@
 #include "../include/menu.h"
 
 
-static void gotoxy(int x, int y);
+
 static void textcolor(short f, short b);
 static char getch();
 

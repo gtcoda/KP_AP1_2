@@ -33,7 +33,8 @@ typedef struct {
 typedef enum {
 	BEFORE,
 	AFTER,
-	ONE
+	ONE,
+	INSTEAD
 } insert_t;
 
 

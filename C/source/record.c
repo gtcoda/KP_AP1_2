@@ -274,20 +274,68 @@ void view_record(void) {
 */
 void replace(void) {
 	// Проверим наличие базы. 
-	if (active_db == NULL) { db_manager(); }
-	// Проверим есть ли в базе записи.
-	if (amount_db(active_db) == 0) {
-		add_record();
-		return;
-	}
+	if (active_db == NULL) { db_manager(); return;}
 
 	rn_t number = 0;
+	char * items[3];
+	char str[STR_SIZE];
+	char str_input[STR_SIZE];
+	record_t rec;
 
 	number = view_record_choice();
 
-	record_t record;
-	entry_record(&record);
-	replace_db(record, number, active_db);
+	
+	read_db(number, &rec, active_db);
+
+	sprintf(str,"SURNAME: %s", rec.surname);
+	items[0] = malloc(strlen(str) + 1);
+	strcpy(items[0], str);
+	
+	
+	sprintf(str,"HEIGHT: %d", rec.height);
+	items[1] = malloc(strlen(str) + 1);
+	strcpy(items[1], str);
+	
+	sprintf(str,"WEIGHT: %.2f", rec.weight);
+	items[2] = malloc(strlen(str) + 1);
+	strcpy(items[2], str);
+
+	printf("Выбрать поле: \n");
+	
+	rn_t i = menu(INDENT, LINE_WORK+1, items, 3);
+	
+	// Почистим память!
+	for (uint8_t m = 0; m <= 2; m++) {
+		free(items[m]);
+	}
+	
+	switch(i){
+		case 0:{
+			clear_line(LINE_WORK+1, 1); // Очистим строку и переместим курсор
+			printf(" SURNAME: ");
+			mfgets(str_input, STR_SIZE, stdin);
+			strcpy (rec.surname, str_input);
+			break;
+		}
+		case 1:{
+			clear_line(LINE_WORK+2, 1); // Очистим строку и переместим курсор
+			printf(" HEIGHT: ");
+			mfgets(str_input, STR_SIZE, stdin);
+			rec.height = (uint16_t)strtol(str_input, NULL, 10);
+			break;
+		}
+		case 2:{
+			clear_line(LINE_WORK+3, 1); // Очистим строку и переместим курсор
+			printf(" WEIGHT: ");
+			mfgets(str_input, STR_SIZE, stdin);
+			rec.weight = strtof(str_input, NULL);
+			break;
+		}
+		
+	}
+	
+	// Заменим измененный элемент.
+	insert_db(rec, number, INSTEAD ,active_db);
 	
 	// Выведем измененную базу.
 	clear(0, LINE_WORK);
@@ -295,7 +343,7 @@ void replace(void) {
 }
 
 /*
-Добавление записи
+Вставка записи
 */
 void insert(void) {
 	// Проверим наличие базы. 
@@ -337,7 +385,7 @@ void insert(void) {
 */
 void delite(void) {
 	// Проверим наличие базы. 
-	if (active_db == NULL) { db_manager(); }
+	if (active_db == NULL) { db_manager(); return;}
 
 	if (amount_db(active_db) == 0) {
 		printf(MESSAGE_NO_DELITE);

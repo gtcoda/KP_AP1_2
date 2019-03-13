@@ -109,6 +109,16 @@ uint8_t insert_db_arr(record_t note, record_db_a * base, rn_t number, insert_t s
 		return insert_db_arr(note, base, (number + 1), BEFORE);
 
 	}
+	
+	// На место выбраного элемента
+	if (specifier == INSTEAD) {
+		if (number < base->pointer) {
+			strcpy(base->db[number].surname, note.surname);
+			base->db[number].height = note.height;
+			base->db[number].weight = note.weight;
+			return 1;
+		}
+	}
 
 	return 0;
 }

@@ -22,9 +22,12 @@
 #define MEMU_WORK (COUNT_LINE_VELCOM + COUNT_LINE_DB_ACTIVE) // ПОЗИция строки начала меню
 #define LINE_WORK (COUNT_LINE_MENU + COUNT_LINE_VELCOM + COUNT_LINE_DB_ACTIVE) // Позиция начальной строки под меню.
 
+#define INDENT 1 // Отступ основной
+
+
 #define MENU_CREATE_DB 	"Управление базами."
 #define MENU_ADD 		"Добавить запись."
-#define MENU_REPLACE 	"Заменить запись."
+#define MENU_REPLACE 	"Изменить запись."
 #define MENU_READ 		"Прочитать файл в базу."
 #define MENU_WRITE		"Записать базу в файл."
 #define MENU_INSERT 	"Вставка записи."
@@ -47,4 +50,6 @@
 int menu(int x, int y, char* items[], int cnt);
 void clear(int X, int Y);
 void clear_line(int x, int cnt);
+
+void gotoxy(int x, int y);
 #endif

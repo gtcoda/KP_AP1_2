@@ -86,6 +86,7 @@ uint8_t replace_db(record_t note, rn_t number, record_db_a * base) {
 Вставка записи note в позицию number в соответствии со спецификатором.
 0 - перед элементом number
 1 - после элемента number
+2 - на место элемента
 */
 uint8_t insert_db(record_t note, rn_t number, insert_t specifier, record_db_a * base) {
 	if (insert_db_arr(note, base, number, specifier)) {

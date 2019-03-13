@@ -426,11 +426,11 @@ void entry_record(record_t * note) {
 
 	printf("Enter height: ");
 	mfgets(height, sizeof(height), stdin);
-	note->height = (uint16_t)strtol(height, NULL, 10);
+	note->height = (h_type)strtol(height, NULL, 10);
 
 	printf("Enter weight: ");
 	mfgets(weight, sizeof(weight), stdin);
-	note->weight = strtof(weight, NULL);
+	note->weight = (w_type)strtof(weight, NULL);
 }
 
 /*
@@ -478,6 +478,10 @@ void sort(void) {
 */
 void view_record_diap(void){
 	sort_t column;
+	if (amount_db(active_db) == 0) {
+		printf(MESSAGE_NO_RECORDS);
+		return;
+	}
 
 	printf("Выберите поле:\n");
 	char * items[] = {	MENU_HEIGHT,
@@ -486,6 +490,11 @@ void view_record_diap(void){
 	
 	column = menu(0, LINE_WORK + 1, items, sizeof(items) / sizeof(items[0]));
 	clear(0, LINE_WORK);
+	
+	
+	
+	
+	
 	
 	if (items[column] == MENU_HEIGHT) {
 		view_record_diap_height();
@@ -497,19 +506,19 @@ void view_record_diap(void){
 
 
 void view_record_diap_height(void) {
-	rn_t begin = 0, end = 0, min=0, max=0;
-	rn_t count = 0; 
+	h_type begin = 0, end = 0;
+	rn_t count = 0, min, max; 
 	uint32_t midle = 0;
 	char str[NAME_SIZE];
 
 	printf("Введите диапазон.\n");
 	printf("Начало диапазона: ");
 	mfgets(str, sizeof(str), stdin);
-	begin = (uint16_t)strtol(str, NULL, 10);
+	begin = (h_type)strtol(str, NULL, 10);
 
 	printf("Конец диапазона: ");
 	mfgets(str, sizeof(str), stdin);
-	end = (uint16_t)strtol(str, NULL, 10);
+	end = (h_type)strtol(str, NULL, 10);
 
 
 
@@ -518,23 +527,28 @@ void view_record_diap_height(void) {
 		read_db(i, &rec, active_db);
 
 		if (rec.height >= begin && rec.height <= end) {
+			if(count == 0){
+				min = max = i;
+			}
+			
 			midle = midle + rec.height;
 			count++;
 			printf(VIEW_BODY, i, rec.surname, rec.height, rec.weight);
-		}
+		
 
-		// Проверяем на минимум.
-		read_db(min, &rec_min_max, active_db);
-		if (rec.height < rec_min_max.height ) {
-			min = i;
-		}
+			// Проверяем на минимум.
+			read_db(min, &rec_min_max, active_db);
+			if (rec.height < rec_min_max.height ) {
+				min = i;
+			}
 
-		// Проверяем на максимум.
-		read_db(max, &rec_min_max, active_db);
-		if (rec.height > rec_min_max.height) {
-			max = i;
+			// Проверяем на максимум.
+			read_db(max, &rec_min_max, active_db);
+			if (rec.height > rec_min_max.height) {
+				max = i;
+			}
+			
 		}
-
 	}
 
 	if (count != 0) {
@@ -555,19 +569,19 @@ void view_record_diap_height(void) {
 
 void view_record_diap_weight(void) {
 
-	rn_t min = 0, max = 0;
+	rn_t min, max;
 	rn_t count = 0;
-	float begin = 0, end = 0, midle = 0;
+	w_type begin = 0, end = 0, midle = 0;
 	char str[NAME_SIZE];
 
 	printf("Введите диапазон.\n");
 	printf("Начало диапазона: ");
 	mfgets(str, sizeof(str), stdin);
-	begin = strtof(str, NULL);
+	begin = (w_type)strtof(str, NULL);
 
 	printf("Конец диапазона: ");
 	mfgets(str, sizeof(str), stdin);
-	end = strtof(str, NULL);
+	end = (w_type)strtof(str, NULL);
 
 
 
@@ -576,23 +590,27 @@ void view_record_diap_weight(void) {
 		read_db(i, &rec, active_db);
 
 		if (rec.weight >= begin && rec.weight <= end) {
+			if(count == 0){
+				min = max = i;
+			}
+			
 			midle = midle + rec.weight;
 			count++;
 			printf(VIEW_BODY, i, rec.surname, rec.height, rec.weight);
-		}
+		
 
-		// Проверяем на минимум.
-		read_db(min, &rec_min_max, active_db);
-		if (rec.weight < rec_min_max.weight) {
-			min = i;
-		}
+			// Проверяем на минимум.
+			read_db(min, &rec_min_max, active_db);
+			if (rec.weight < rec_min_max.weight) {
+				min = i;
+			}
 
-		// Проверяем на максимум.
-		read_db(max, &rec_min_max, active_db);
-		if (rec.weight > rec_min_max.weight) {
-			max = i;
+			// Проверяем на максимум.
+			read_db(max, &rec_min_max, active_db);
+			if (rec.weight > rec_min_max.weight) {
+				max = i;
+			}
 		}
-
 	}
 
 	if (count != 0) {

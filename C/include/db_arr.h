@@ -13,8 +13,6 @@ uint8_t write_db_arr(record_t note, record_db_a * base, rn_t * number);
 
 rn_t amount_db_arr(record_db_a *base);
 
-uint8_t replace_db_arr(record_t note, record_db_a * base, rn_t number);
-
 uint8_t insert_db_arr(record_t note, record_db_a * base, rn_t number, insert_t specifier);
 
 uint8_t delite_db_arr(record_db_a * base, rn_t number, insert_t specirier);

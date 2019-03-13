@@ -45,6 +45,7 @@
 #define DB_DAFAULT_NAME "default"
 
 #define MESSAGE_NO_BASE "Нет базы. Создать!"
+#define MESSAGE_NO_RECORDS "Нет ни одной записи!"
 #define MESSAGE_NO_DELITE "База пуста. Удалять нечего. \n"
 
 int menu(int x, int y, char* items[], int cnt);

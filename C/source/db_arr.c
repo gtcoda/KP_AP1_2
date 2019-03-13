@@ -24,7 +24,7 @@ uint8_t read_db_arr(rn_t number, record_t * note, record_db_a * base) {
 */
 uint8_t write_db_arr(record_t note, record_db_a * base, rn_t * number) {
 	// У нас нет памяти 
-	if (base->pointer == base->size - 2) {
+	if (base->pointer == base->size - DB_THRESHOLD) {
 		record_t * new_block;
 		// Увеличим память выделеную под массив.
 		// И изменим ссылку на базу. Т.к указатель может измениться.
@@ -59,20 +59,6 @@ rn_t amount_db_arr(record_db_a *base) {
 }
 
 
-/*
-Заменяет запись number в базе *base записью note
-*/
-uint8_t replace_db_arr(record_t note, record_db_a * base, rn_t number) {
-	if (number < base->pointer) {
-		strcpy(base->db[number].surname, note.surname);
-		base->db[number].height = note.height;
-		base->db[number].weight = note.weight;
-		return 1;
-	}
-	return 0;
-}
-
-
 
 /*
 Вставляет запись note в базу *base относительно number в соответствии со specifier.
@@ -87,14 +73,15 @@ uint8_t insert_db_arr(record_t note, record_db_a * base, rn_t number, insert_t s
 			base->db[i].height = base->db[i - 1].height;
 			base->db[i].weight = base->db[i - 1].weight;
 		}
+		// Указателя свободной ячейки вперед
+		base->pointer++;
 
 		strcpy(base->db[number].surname, note.surname);
 		base->db[number].height = note.height;
 		base->db[number].weight = note.weight;
 
 
-		// Указателя свободной ячейки вперед
-		base->pointer++;
+		
 
 		return 1;
 	}
@@ -104,7 +91,7 @@ uint8_t insert_db_arr(record_t note, record_db_a * base, rn_t number, insert_t s
 		if (number == base->pointer) {
 			return write_db_arr(note, base, NULL);
 		}
-		// Вставка после элемента, это то же самое что вставка перд элемент+1.
+		// Вставка после элемента, это то же самое что вставка перед элемент+1.
 		// Вызовем рекурсивно.
 		return insert_db_arr(note, base, (number + 1), BEFORE);
 

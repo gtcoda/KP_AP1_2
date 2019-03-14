@@ -114,6 +114,7 @@ uint8_t insert_db_arr(record_t note, record_db_a * base, rn_t number, insert_t s
 Удаление записи с номером number из бызы *base в соответствии со specifier.
 */
 uint8_t delite_db_arr(record_db_a * base, rn_t number, insert_t specifier) {
+	// Удалить только выбраный элемент.
 	if (specifier == ONE) {
 		if (number < base->pointer) {
 			for (rn_t i = number; i < base->pointer; i++) {
@@ -127,6 +128,7 @@ uint8_t delite_db_arr(record_db_a * base, rn_t number, insert_t specifier) {
 		}
 	}
 
+	// Удаление записей из базы до якорной.
 	if (specifier == BEFORE) {
 		if (number < base->pointer) {
 
@@ -142,6 +144,7 @@ uint8_t delite_db_arr(record_db_a * base, rn_t number, insert_t specifier) {
 		}
 	}
 	
+	// Удаление записей из базы после якорной. 
 	if (specifier == AFTER) {
 		if (number < base->pointer) {
 			base->pointer = number;

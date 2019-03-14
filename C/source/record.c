@@ -363,8 +363,8 @@ void insert(void) {
 	
 	printf("Select position: \n");
 		
-	char * items[2] = {	"0 - BEFORE.",
-						"1 - AFTER."
+	char * items[2] = {	"0 - Перед выбраным.",
+						"1 - После выбраного."
 	};
 	
 	specifier = menu(1, LINE_WORK + 1, items, sizeof(items) / sizeof(items[0]));
@@ -399,9 +399,9 @@ void delite(void) {
 	number = view_record_choice();
 
 	printf("Input specifir: \n");
-	char * items[] = {	"0 - BEFORE.",
-						"1 - AFTER.",
-						"2 - ONE."
+	char * items[] = {	"0 - Все до выбранного.",
+						"1 - Все после выбранного.",
+						"2 - Только выбранный."
 	};
 	
 	specifier = menu(1, LINE_WORK + 1, items, sizeof(items) / sizeof(items[0]));

@@ -6,9 +6,9 @@ static void textcolor(short f, short b);
 static char getch();
 
 
-// X - столбец, Y - строка.
-void clear(int X, int Y) {
-	COORD topLeft = { X, Y };
+// X - строка, Y - столбец.
+void clear(int x, int y) {
+	COORD topLeft = { y, x };
 	HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
 	CONSOLE_SCREEN_BUFFER_INFO screen;
 	DWORD written;

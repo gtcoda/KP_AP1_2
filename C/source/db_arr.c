@@ -29,6 +29,17 @@ rn_t amount_db_arr(record_db_a *base) {
 Возвращает 1 в случае успеха. 0 - неудача.
 */
 uint8_t write_db_arr(record_t note, record_db_a * base, rn_t * number) {
+	// У нас нет памяти 
+	if (base->pointer <= base->size) {
+
+		// Увеличим память выделеную под массив.
+		realloc(base->db, (base->size * sizeof(record_t *) + DB_START_SIZE));
+
+		// Увеличим и счетчик размера массива.
+		base->size = base->size + DB_START_SIZE;
+	}
+
+
 
 	// Выделим память для записи.
 	base->db[base->pointer] = malloc(sizeof(record_t));
@@ -41,16 +52,6 @@ uint8_t write_db_arr(record_t note, record_db_a * base, rn_t * number) {
 
 	if (number != NULL) {
 		*number = (rn_t)base->pointer - 1;
-	}
-
-	// У нас осталось одна свободная ячейка. 
-	if (base->pointer == base->size - 1) {
-		
-		// Увеличим память выделеную под массив.
-		realloc(base->db, (base->size * sizeof(record_t *) + DB_START_SIZE) );
-		
-		// Увеличим и счетчик размера массива.
-		base->size = base->size + DB_START_SIZE;
 	}
 
 	return 1;

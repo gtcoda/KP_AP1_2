@@ -2,18 +2,19 @@
 #include "../include/db_arr.h"
 #include "../include/db_list.h"
 
-record_db_a base;
-
 
 
 void create_db(db_union * base) {
 	if (DB == "ARRAY") {
 		base->array = malloc(sizeof(record_db_a));
+		// Настроим начальное состояние базы.
+		base->array->size = 0;
+		base->array->pointer = 0;
 	}
 	else if (DB == "LIST") {
 		record_db_l * list;
 		list = malloc(sizeof(record_db_l));
-		// Занулим память
+		// Занулим память.
 		list->first = NULL;
 		list->last = NULL;
 		base->list = list;

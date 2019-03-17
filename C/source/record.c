@@ -3,7 +3,7 @@
 
 
 char *filename = RECORD_FILES;
-void db_manager_add(void);
+void db_manager_add(char * name);
 void record_parsing(char * string);
 void entry_record(record_t * note);
 char * trim(char *s);
@@ -21,15 +21,14 @@ db_union * active_db = NULL;
 void db_manager(void) {
 	// Нет ни одной базы. Создадим?
 	if (manager_db.count_db == 0) {
-		printf("Нет ни одной базы. Создадим! \n");
-		db_manager_add();
+		db_manager_add(DB_DAFAULT_NAME);
 	}
 	else {
 		char * items[MAX_DB+1];
 		uint8_t i;
 		const char *baseinsert = { "Добавить базу. \n" };
 		
-		clear(0, COUNT_LINE_VELCOM);
+		clear(COUNT_LINE_VELCOM, 0);
 
 		printf("Базы: \n");
 
@@ -45,7 +44,13 @@ void db_manager(void) {
 
 		// Требуют создать новую  базу
 		if (bases == i) {
-			db_manager_add();
+			char db_name[NAME_SIZE];
+			printf("======================================================== \n");
+			// Получим имя базы.
+			printf("Введите имя базы: ");
+			mfgets(db_name, NAME_SIZE, stdin);
+
+			db_manager_add(db_name);
 		}
 		else {
 			active_db = &manager_db.db_list[bases].pointer_db;
@@ -58,18 +63,17 @@ void db_manager(void) {
 
 	}
 
-	clear(0, COUNT_LINE_VELCOM);
+	clear (COUNT_LINE_VELCOM, 0);
 }
 
 
+/*
 
-void db_manager_add(void) {
-	char db_name[NAME_SIZE];
-	printf("======================================================== \n");
-	// Получим имя базы.
-	printf("Введите имя базы: ");
-	mfgets(db_name, NAME_SIZE, stdin);
-	strcpy(&manager_db.db_list[ manager_db.count_db ].name_db, &db_name);
+
+*/
+void db_manager_add(char * name) {
+	
+	strcpy(&manager_db.db_list[ manager_db.count_db ].name_db, name);
 	// Создадим новую базу.
 	create_db(&manager_db.db_list[ manager_db.count_db ].pointer_db);
 

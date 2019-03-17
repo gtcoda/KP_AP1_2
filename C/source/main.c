@@ -4,20 +4,15 @@
 #include "../include/menu.h"
 #include "../include/record.h"
 
-char velcome[] = "KP_AP1_2 \n"
-"\n";
-
-
-
-
-
-
 
 void main(void) {	
 
-	//system("chcp 1251"); // переходим в консоли на русский язык
+	// переходим в консоли на русский язык
 	setlocale(LC_ALL, "Rus");
-	char command[40];
+	
+	char velcome[] = "KP_AP1_2 \n"
+		"\n";
+
 	printf(velcome);
 
 	const char* items[] = {
@@ -37,52 +32,56 @@ void main(void) {
 	while (1) {
 		int i = 0;
 
-		//clear(0, COUNT_LINE_VELCOM);
 
-		i = menu(3, 1, items, sizeof(items)/sizeof(items[0]));
+		i = menu( (COUNT_LINE_VELCOM + 1), 1, items, sizeof(items)/sizeof(items[0]));
 
-		// + число - количество строк в приветствии
-		clear(0, sizeof(items) / sizeof(items[0])+2);
+		clear(	sizeof(items) / sizeof(items[0]) + COUNT_LINE_VELCOM , 0);
 		
 		printf("======================================================== \n");
 
-		strcpy_s(&command, 40,items[i]);
 
-		if (!strcmp(command, MENU_ADD)) {
+		if (!strcmp(items[i], MENU_ADD)) {
 			add_record();
+			continue;
 		}
-		else if (!strcmp(command, MENU_REPLACE)) {
+		else if (!strcmp(items[i], MENU_REPLACE)) {
 			replace();
+			continue;
 		}
-		else if (!strcmp(command, MENU_CREATE_DB)) {
+		else if (!strcmp(items[i], MENU_CREATE_DB)) {
 			db_manager();
+			continue;
 		}
-		else if (!strcmp(command, MENU_READ)) {
+		else if (!strcmp(items[i], MENU_READ)) {
 			read_file();
+			continue;
 		}
-		else if (!strcmp(command, MENU_WRITE)) {
+		else if (!strcmp(items[i], MENU_WRITE)) {
 			write_file();
+			continue;
 		}
-		else if (!strcmp(command, MENU_INSERT)) {
+		else if (!strcmp(items[i], MENU_INSERT)) {
 			insert();
+			continue;
 		}
-		else if (!strcmp(command, MENU_DELITE)) {
+		else if (!strcmp(items[i], MENU_DELITE)) {
 			delite();
+			continue;
 		}
-		else if (!strcmp(command, MENU_VIEW)) {
+		else if (!strcmp(items[i], MENU_VIEW)) {
 			view_record();
+			continue;
 		}
-		else if (!strcmp(command, MENU_AMOUNT)) {
+		else if (!strcmp(items[i], MENU_AMOUNT)) {
 			amount();
+			continue;
 		}
-		else if (!strcmp(command, MENU_SORT)) {
+		else if (!strcmp(items[i], MENU_SORT)) {
 			sort();
+			continue;
 		}
-		else if (!strcmp(command, MENU_EXIT)) {
+		else if (!strcmp(items[i], MENU_EXIT)) {
 			break;
-		}
-		else {
-			printf("command %s not found! \n", command);
 		}
 		
 		

@@ -33,6 +33,7 @@ uint8_t read_db_list(rn_t number, record_t * note, record_db_l *list) {
 			note->weight = follow->data->weight;
 			return 1;
 		}
+
 	}
 
 	return 0;
@@ -65,7 +66,10 @@ rn_t amount_db_list(record_db_l * list){
 	return count;
 }
 
-
+/*
+Запись в базу *list записи из структуры note.
+* number - индекс записаного элемента.
+*/
 uint8_t write_db_list(record_t note, record_db_l * list, rn_t * number) {
 	// Выделим память для элемента списка 
 	record_t_l * record = malloc(sizeof(note));
@@ -73,12 +77,13 @@ uint8_t write_db_list(record_t note, record_db_l * list, rn_t * number) {
 	record->data = malloc(sizeof(record_t));
 
 	if (record != NULL) {
+		// Скопируем данные.
 		strcpy(record->data->surname, note.surname);
 		record->data->height = note.height;
 		record->data->weight = note.weight;
 
-		// Если наш блок первый
-		if (list->first == NULL) {
+		// Установим связи.
+		if (list->first == NULL) { // Если наш блок первый
 			list->first = record;
 			list->last = record;
 			// Связываем записи
@@ -86,19 +91,10 @@ uint8_t write_db_list(record_t note, record_db_l * list, rn_t * number) {
 			record->prev = record;
 		}
 		else {
-			// Наш предыдущий блок был последним
-			record->prev = list->last;
-
-			// Свяжем предыдущий блок с нашим
-			list->last->next = record;
-
-			// Сами становимся последним
-			list->last = record;
-
-			// Следующего блока нет, указываем на себя
-			record->next = record;
-
-	
+			record->prev = list->last; // Наш предыдущий блок был последним
+			list->last->next = record; // Свяжем предыдущий блок с нашим
+			list->last = record; // Сами становимся последним
+			record->next = record; // Следующего блока нет, указываем на себя
 		}
 		return 1;
 	}
@@ -203,7 +199,7 @@ uint8_t write_db_list_sort(record_t note, record_db_l * list, rn_t * number, sor
 	{
 		// Если наше значение больше последнего, заменим его.
 
-			// Наш предыдущий блок был последним
+		// Наш предыдущий блок был последним
 		record->prev = list->last;
 
 		// Свяжем предыдущий блок с нашим
@@ -318,6 +314,9 @@ uint8_t insert_db_list(record_t note, record_db_l * list, rn_t number, insert_t 
 	return 0;
 }
 
+/*
+Удаление элемента(-тов) с индексом number из базы * list в соответствии со спецификатором.
+*/
 uint8_t delite_db_list(record_db_l * list, rn_t number, insert_t specirier) {
 
 	record_t_l * target = record_of_list(list, number);

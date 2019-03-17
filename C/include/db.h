@@ -9,7 +9,7 @@
 #include <string.h>
 
 
-#define DB "LIST" // LIST - связный список, ARRAY - массив
+#define DB "ARRAY" // LIST - связный список, ARRAY - массив
 #define SORT "BUBBLE" // BUBBLE - сортировка пузырьком
 #define SORT_FIELD "SURNAME" // SURNAME, HEIGHT, WEIGHT Поле сортировки
 
@@ -17,33 +17,41 @@
 
 #define DB_START_SIZE 10 // начальный размер базы
 #define NAME_SIZE 40
+
 typedef uint16_t rn_t; // тип номера записи в базе
 
+// Формат записи.
 typedef struct {
 	char surname[NAME_SIZE];
 	uint32_t height;
 	float weight;
 } record_t;
 
+// База данных с хранением в виде массива.
 typedef struct {
-	record_t * db[DB_START_SIZE];
+	record_t db[DB_START_SIZE];
 	size_t size; // Текущий размер 
 	rn_t pointer; // Номер свободной ячейки
 } record_db_a;
 
-
-
+// Структура для хранения одной записи связного списка.
 typedef struct _record_t_l {
 	record_t * data;
 	struct _record_t_l * next;
 	struct _record_t_l * prev;
 }record_t_l;
 
-
+// База данных с хранением в виде связного списка.
 typedef struct {
 	record_t_l * first;
 	record_t_l * last;
 }record_db_l;
+
+// Обьединение для доступа с разным базам.
+typedef union {
+	record_db_a * array;
+	record_db_l * list;
+} db_union;
 
 
 typedef enum {
@@ -58,14 +66,6 @@ typedef enum {
 	HEIGHT, 
 	WEIGHT
 } sort_t;
-
-
-
-typedef union {
-	record_db_a * array;
-	record_db_l * list;
-} db_union;
-
 
 
 void create_db(db_union * base);

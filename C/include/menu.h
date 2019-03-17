@@ -7,8 +7,9 @@
 #include <stdio.h>
 #include <windows.h>
 
+#define VELCOM "KP_AP1_2 \n\n";
 
-#define COUNT_LINE_VELCOM 2 // Количество строк занимаемое шапкой.
+#define COUNT_LINE_VELCOM 2 // Количество строк занимаемое приветствием.
 
 
 #define MENU_CREATE_DB "\n Управление базами. "

@@ -13,6 +13,8 @@
 #include "db.h"
 #include "menu.h"
 
+#define DB_DAFAULT_NAME "default"
+
 #define VIEW_HEAD "¹  | Surname | Height | Weight \n\r"
 #define SEPARATOR ":"
 

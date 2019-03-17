@@ -8,7 +8,7 @@ static char getch();
 
 // X - строка, Y - столбец.
 void clear(int x, int y) {
-	COORD topLeft = { y, x };
+	COORD topLeft = { x, y };
 	HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
 	CONSOLE_SCREEN_BUFFER_INFO screen;
 	DWORD written;
@@ -47,7 +47,7 @@ char getch() {
 	while (ReadConsoleInputA(hstdin, &rec, 1, &event)) {
 		if ((rec.EventType == KEY_EVENT)
 			&& (rec.Event.KeyEvent.bKeyDown)) {
-			return rec.Event.KeyEvent.wVirtualKeyCode;
+			return (char)rec.Event.KeyEvent.wVirtualKeyCode;
 		}
 	}
 	return EOF;

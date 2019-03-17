@@ -32,10 +32,9 @@ void main(void) {
 	while (1) {
 		int i = 0;
 
-
 		i = menu( (COUNT_LINE_VELCOM + 1), 1, items, sizeof(items)/sizeof(items[0]));
 
-		clear(	sizeof(items) / sizeof(items[0]) + COUNT_LINE_VELCOM , 0);
+		clear(0, sizeof(items) / sizeof(items[0]) + COUNT_LINE_VELCOM);
 		
 		printf("======================================================== \n");
 

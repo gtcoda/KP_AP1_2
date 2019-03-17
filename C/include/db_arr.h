@@ -7,11 +7,6 @@
 
 
 
-
-
-
-
-
 uint8_t read_db_arr(rn_t number, record_t * note, record_db_a * base);
 
 uint8_t write_db_arr(record_t note, record_db_a * base, rn_t * number);

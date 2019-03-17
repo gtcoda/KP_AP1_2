@@ -1,16 +1,17 @@
 #include "../include/db_arr.h"
 
 
-static void swap_arr(record_t * cell_1, record_t * cell_2);
+static void swap_arr(record_t cell_1, record_t cell_2);
 
 /*
 Чтение записи number из массива *base в структуру *note
 Возвращает 1 в случае успеха. 0 - неудача.
 */
 uint8_t read_db_arr(rn_t number, record_t * note, record_db_a * base) {
-	strcpy(note->surname, base->db[number]->surname);
-	note->height = base->db[number]->height;
-	note->weight = base->db[number]->weight;
+
+	strcpy(note->surname, base->db[number].surname);
+	note->height = base->db[number].height;
+	note->weight = base->db[number].weight;
 
 	return 1;
 }
@@ -30,24 +31,20 @@ rn_t amount_db_arr(record_db_a *base) {
 */
 uint8_t write_db_arr(record_t note, record_db_a * base, rn_t * number) {
 	// У нас нет памяти 
-	if (base->pointer <= base->size) {
+	if (base->pointer == base->size - 2) {
 
 		// Увеличим память выделеную под массив.
-		realloc(base->db, (base->size * sizeof(record_t *) + DB_START_SIZE));
+		// И изменим ссылку на базу. Т.к указатель может измениться.
+		base->db = realloc( base->db, (base->size + DB_START_SIZE) * sizeof(record_t) );
 
-		// Увеличим и счетчик размера массива.
+		// Увеличим счетчик размера массива.
 		base->size = base->size + DB_START_SIZE;
 	}
 
 
-
-	// Выделим память для записи.
-	base->db[base->pointer] = malloc(sizeof(record_t));
-
-
-	strcpy(base->db[base->pointer]->surname, note.surname);
-	base->db[base->pointer]->height = note.height;
-	base->db[base->pointer]->weight = note.weight;
+	strcpy(base->db[base->pointer].surname, note.surname);
+	base->db[base->pointer].height = note.height;
+	base->db[base->pointer].weight = note.weight;
 	base->pointer++;
 
 	if (number != NULL) {
@@ -60,9 +57,9 @@ uint8_t write_db_arr(record_t note, record_db_a * base, rn_t * number) {
 // Замена 
 uint8_t replace_db_arr(record_t note, record_db_a * base, rn_t number) {
 	if (number < base->pointer) {
-		strcpy(base->db[number]->surname, note.surname);
-		base->db[number]->height = note.height;
-		base->db[number]->weight = note.weight;
+		strcpy(base->db[number].surname, note.surname);
+		base->db[number].height = note.height;
+		base->db[number].weight = note.weight;
 		return 1;
 	}
 	return 0;
@@ -77,14 +74,14 @@ uint8_t insert_db_arr(record_t note, record_db_a * base, rn_t number, insert_t s
 		// Сдвинем базу на одну позицию.
 		for (rn_t i = base->pointer; i > number; i--) {
 			//base->db[i] = base->db[i - 1];
-			strcpy(base->db[i]->surname, base->db[i - 1]->surname);
-			base->db[i]->height = base->db[i - 1]->height;
-			base->db[i]->weight = base->db[i - 1]->weight;
+			strcpy(base->db[i].surname, base->db[i - 1].surname);
+			base->db[i].height = base->db[i - 1].height;
+			base->db[i].weight = base->db[i - 1].weight;
 		}
 
-		strcpy(base->db[number]->surname, note.surname);
-		base->db[number]->height = note.height;
-		base->db[number]->weight = note.weight;
+		strcpy(base->db[number].surname, note.surname);
+		base->db[number].height = note.height;
+		base->db[number].weight = note.weight;
 
 
 		// Указателя свободной ячейки вперед
@@ -113,9 +110,9 @@ uint8_t delite_db_arr(record_db_a * base, rn_t number, insert_t specirier) {
 		if (number < base->pointer) {
 			for (rn_t i = number; i < base->pointer; i++) {
 				//base->db[i] = base->db[i + 1];
-				strcpy(base->db[i]->surname, base->db[i + 1]->surname);
-				base->db[i]->height = base->db[i + 1]->height;
-				base->db[i]->weight = base->db[i + 1]->weight;
+				strcpy(base->db[i].surname, base->db[i + 1].surname);
+				base->db[i].height = base->db[i + 1].height;
+				base->db[i].weight = base->db[i + 1].weight;
 			}
 			base->pointer--;
 			return 1;
@@ -127,9 +124,9 @@ uint8_t delite_db_arr(record_db_a * base, rn_t number, insert_t specirier) {
 
 			for (uint8_t i = 0; i < ( base->pointer - number - 1) ; i++) {
 				//base->db[i] = base->db[number + i + 1];
-				strcpy(base->db[i]->surname, base->db[number + i + 1]->surname);
-				base->db[i]->height = base->db[number + i + 1]->height;
-				base->db[i]->weight = base->db[number + i + 1]->weight;
+				strcpy(base->db[i].surname, base->db[number + i + 1].surname);
+				base->db[i].height = base->db[number + i + 1].height;
+				base->db[i].weight = base->db[number + i + 1].weight;
 			}
 
 			base->pointer = base->pointer - number - 1;
@@ -170,21 +167,21 @@ uint8_t sort_bubble_db_arr(record_db_a * base, sort_t column) {
 		for (rn_t i = 0; i < base->pointer - 1; i++) {
 			// Сортируем по полю "HEIGHT"
 			if ( column == HEIGHT && 
-				 ( base->db[i]->height ) > (base->db[i + 1]->height ) ) {
-				swap_arr(base->db[i], base->db[i + 1]);
+				 ( base->db[i].height ) > (base->db[i + 1].height ) ) {
+				swap_arr( base->db[i], base->db[i + 1]);
 				flag = 1;
 			}
 
 			// Сортируем по полю "WEIGHT"
 			if ( column == WEIGHT && 
-				 base->db[i]->weight > base->db[i + 1]->weight ) {
+				 base->db[i].weight > base->db[i + 1].weight ) {
 				swap_arr(base->db[i], base->db[i + 1]);
 				flag = 1;
 			}
 
 			// Сортируем по полю "SURNAME"
 			if ( column == SURNAME && 
-				 strcmp(base->db[i]->surname, base->db[i + 1]->surname) > 0  ) {
+				 strcmp(base->db[i].surname, base->db[i + 1].surname) > 0  ) {
 				swap_arr(base->db[i], base->db[i + 1]);
 				flag = 1;
 			}
@@ -205,8 +202,8 @@ uint8_t sort_bubble_db_arr(record_db_a * base, sort_t column) {
 Для сортировки пузырьком.
 Меняет местами элементы массива element1 и element2.
 */
-void swap_arr(record_t * element1, record_t * element2) {
-	record_t * A;
+void swap_arr(record_t element1, record_t element2) {
+	record_t A;
 	A = element1;
 	element1 = element2;
 	element2 = A;

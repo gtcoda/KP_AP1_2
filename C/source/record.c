@@ -7,6 +7,7 @@ void db_manager_add(char * name);
 void record_parsing(char * string);
 void entry_record(record_t * note);
 char * trim(char *s);
+rn_t view_record_choice(void);
 
 
 
@@ -15,20 +16,21 @@ struct {
 	uint8_t count_db;
 }manager_db;
 
-db_union * active_db = NULL;
+record_db_a * active_db = NULL;
 
 // Управление базами данных
 void db_manager(void) {
 	// Нет ни одной базы. Создадим?
 	if (manager_db.count_db == 0) {
 		db_manager_add(DB_DAFAULT_NAME);
+		return;
 	}
 	else {
 		char * items[MAX_DB+1];
 		uint8_t i;
 		const char *baseinsert = { "Добавить базу. \n" };
 		
-		clear(COUNT_LINE_VELCOM, 0);
+		clear(0, COUNT_LINE_VELCOM );
 
 		printf("Базы: \n");
 
@@ -53,7 +55,7 @@ void db_manager(void) {
 			db_manager_add(db_name);
 		}
 		else {
-			active_db = &manager_db.db_list[bases].pointer_db;
+			active_db = manager_db.db_list[bases].pointer_db;
 		}
 		
 		// Почистим память!
@@ -78,7 +80,7 @@ void db_manager_add(char * name) {
 	create_db(&manager_db.db_list[ manager_db.count_db ].pointer_db);
 
 	// Сразу сделаем ее активной.
-	active_db = &manager_db.db_list[ manager_db.count_db ].pointer_db;
+	active_db = manager_db.db_list[ manager_db.count_db ].pointer_db;
 
 	manager_db.count_db++;
 }
@@ -217,17 +219,13 @@ void view_record() {
 void replace(void) {
 	// Проверим наличие базы. 
 	if (active_db == NULL) { db_manager(); }
+	rn_t i;
 
-	rn_t number = 0;
+	i = view_record_choice();
+
 	record_t record;
-	char str[STR_SIZE];
-	printf("Number of fix record: ");
-	mfgets(str, sizeof(str), stdin);
-	number = (rn_t)strtol(str, NULL, 10);
-
 	entry_record(&record);
-
-	replace_db(record, number, active_db);
+	replace_db(record, i, active_db);
 }
 
 /*
@@ -331,6 +329,39 @@ void sort(void) {
 	}
 }
 
+
+
+
+/*
+Выводит на экран базу данных с возможностью выбора элемента
+*/
+rn_t view_record_choice(void) {
+	// Создадим список 
+	char ** items;
+	rn_t i = 0;
+	items = (char **)malloc(sizeof(char *) * amount_db(active_db));
+
+	for (i = 0; i < amount_db(active_db); i++) {
+		char str[100];
+		record_t rec;
+		read_db(i, &rec, active_db);
+		sprintf(str, "%-2u |%-10s| %-10u| %-10.2f \r", i, rec.surname, rec.height, rec.weight);
+		items[i] = malloc(100);
+		strcpy(items[i], str);
+	}
+
+	i = menu(1, 15, items, amount_db(active_db));
+
+	// Почистим память!
+	for (uint8_t m = 0; m < amount_db(active_db); m++) {
+		free(items[m]);
+	}
+	free(items);
+
+	clear(1, 15);
+
+	return i;
+}
 
 
 /*

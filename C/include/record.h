@@ -26,10 +26,11 @@
 
 typedef struct {
 	char name_db[NAME_SIZE];
-	db_union pointer_db;
+	record_db_a * pointer_db;
 }db;
 
 
+void db_manager(void);
 
 void add_record();
 void write_file();

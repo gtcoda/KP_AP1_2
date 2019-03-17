@@ -207,8 +207,7 @@ void view_record() {
 			record_t rec;
 			read_db(i, &rec, active_db);
 
-			printf("%-2u |%-10s| %-10u| %-10.2f", i, rec.surname, rec.height, rec.weight);
-			printf("\n\r");
+			printf(" %-2u |%-10s| %-10u| %-10.2f \n\r", i, rec.surname, rec.height, rec.weight);
 		}
 	}
 }
@@ -234,24 +233,29 @@ void replace(void) {
 void insert(void) {
 	// Проверим наличие базы. 
 	if (active_db == NULL) { db_manager(); }
-
 	rn_t number = 0;
 	insert_t specifier;
 	record_t record;
-	char str[STR_SIZE];
-	printf("Number of insert record: ");
-	mfgets(str, sizeof(str), stdin);
-	number = (rn_t)strtol(str, NULL, 10);
+
+
+	number = view_record_choice();
 	
 	printf("Select position: \n");
-	printf("0 - BEFORE; \n");
-	printf("1 - AFTER; \n");
-	mfgets(str, sizeof(str), stdin);
-	specifier = (insert_t)strtol(str, NULL, 10);
+		
+	char * items[2] = {	"0 - BEFORE;",
+						"1 - AFTER;"
+	};
+	
+	specifier = menu(1, LINE_WORK + 1, items, 2);
+	clear(1, LINE_WORK);
+
 
 	entry_record(&record);
 
 	insert_db(record, number, specifier, active_db);
+
+	clear(1, LINE_WORK);
+	view_record();
 }
 
 
@@ -350,7 +354,7 @@ rn_t view_record_choice(void) {
 		strcpy(items[i], str);
 	}
 
-	i = menu(1, 15, items, amount_db(active_db));
+	i = menu(1, LINE_WORK, items, amount_db(active_db));
 
 	// Почистим память!
 	for (uint8_t m = 0; m < amount_db(active_db); m++) {
@@ -358,7 +362,7 @@ rn_t view_record_choice(void) {
 	}
 	free(items);
 
-	clear(1, 15);
+	clear(1, LINE_WORK);
 
 	return i;
 }

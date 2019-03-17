@@ -10,7 +10,9 @@
 #define VELCOM "KP_AP1_2 \n\n";
 
 #define COUNT_LINE_VELCOM 2 // Количество строк занимаемое приветствием.
+#define COUNT_LINE_MENU 12 // Количество строк занятых менюшкой.
 
+#define LINE_WORK (COUNT_LINE_MENU + COUNT_LINE_VELCOM) // Позиция начальной строки под меню.
 
 #define MENU_CREATE_DB "\n Управление базами. "
 #define MENU_ADD "\n Добавить запись. "

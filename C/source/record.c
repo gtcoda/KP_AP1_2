@@ -21,16 +21,17 @@ record_db_a * active_db = NULL;
 // Управление базами данных
 void db_manager(void) {
 	// Нет ни одной базы. Создадим?
-	if (manager_db.count_db == 0) {
+/*	if (manager_db.count_db == 0) {
 		db_manager_add(DB_DAFAULT_NAME);
+		printf(DB_DEFAULT_CREATE);
 		return;
 	}
-	else {
+	else { */
 		char * items[MAX_DB+1];
 		uint8_t i;
 		const char *baseinsert = { "Добавить базу. \n" };
 		
-		clear(0, COUNT_LINE_VELCOM );
+		clear (0, COUNT_LINE_VELCOM);
 
 		printf("Базы: \n");
 
@@ -42,7 +43,7 @@ void db_manager(void) {
 		items[i] = malloc(NAME_SIZE);
 		strcpy(items[i], baseinsert);
 		uint8_t bases = 0;
-		bases = menu(3, 3, items, manager_db.count_db+1);
+		bases = menu( 3, DB_ACTIVE_WORK+1, items, manager_db.count_db+1);
 
 		// Требуют создать новую  базу
 		if (bases == i) {
@@ -52,7 +53,13 @@ void db_manager(void) {
 			printf("Введите имя базы: ");
 			mfgets(db_name, NAME_SIZE, stdin);
 
-			db_manager_add(db_name);
+			if (strcmp (db_name, "") == 0 ) {
+				db_manager_add(DB_DAFAULT_NAME);
+			}
+			else {
+				db_manager_add(db_name);
+			}
+
 		}
 		else {
 			active_db = manager_db.db_list[bases].pointer_db;
@@ -63,7 +70,7 @@ void db_manager(void) {
 			free(items[m]);
 		}
 
-	}
+	//  }
 
 	clear (COUNT_LINE_VELCOM, 0);
 }
@@ -83,6 +90,23 @@ void db_manager_add(char * name) {
 	active_db = manager_db.db_list[ manager_db.count_db ].pointer_db;
 
 	manager_db.count_db++;
+}
+
+
+/*
+Название активной базы. Переменная db_name не меньше NAME_SIZE;
+*/ 
+void db_manager_active_name(char * db_name) {
+	
+	for (uint8_t i = 0; i < manager_db.count_db; i++) {
+		if (active_db == manager_db.db_list[i].pointer_db) {
+			strcpy(db_name, manager_db.db_list[i].name_db);
+			return;
+		}
+	}
+	
+	strcpy(db_name, "none");
+	return;
 }
 
 void record_parsing(char * string) {

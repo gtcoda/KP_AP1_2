@@ -24,6 +24,16 @@ void clear(int x, int y) {
 	SetConsoleCursorPosition(console, topLeft);
 }
 
+// Очистка строк.
+// Просто заполним строку пробелами.
+void clear_line(int x, int cnt) {
+	for (uint8_t i = 0; i < cnt; i++) {
+		gotoxy(0, x + i);
+		printf("\r%80c\r", ' ');
+	}
+	// Вернем курсор на исходную позицию.
+	gotoxy(0, x);
+}
 
 
 

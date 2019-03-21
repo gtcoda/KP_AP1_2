@@ -9,11 +9,8 @@ void main(void) {
 
 	// переходим в консоли на русский язык
 	setlocale(LC_ALL, "Rus");
-	
-	char velcome[] = "KP_AP1_2 \n"
-		"\n";
 
-	printf(velcome);
+	printf(VELCOM);
 
 	const char* items[] = {
 							MENU_CREATE_DB,
@@ -30,11 +27,22 @@ void main(void) {
 	};
 
 	while (1) {
+		// ##############################
+		char db_name[NAME_SIZE];
+		db_manager_active_name(db_name);
+		
+
+		clear_line(DB_ACTIVE_WORK, COUNT_LINE_DB_ACTIVE);
+
+		printf("======================================================== \n");
+		printf("Database active: %s \n", db_name);
+		printf("======================================================== \n");
+		// ##############################
 		int i = 0;
 
-		i = menu( (COUNT_LINE_VELCOM + 1), 1, items, sizeof(items)/sizeof(items[0]));
+		i = menu(COLUMN_LINE_MENU, MEMU_WORK, items, sizeof(items)/sizeof(items[0]));
 
-		clear(0, sizeof(items) / sizeof(items[0]) + COUNT_LINE_VELCOM);
+		clear(COLUMN_LINE_MENU, sizeof(items) / sizeof(items[0]) + MEMU_WORK);
 		
 		printf("======================================================== \n");
 

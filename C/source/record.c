@@ -20,13 +20,7 @@ record_db_a * active_db = NULL;
 
 // Управление базами данных
 void db_manager(void) {
-	// Нет ни одной базы. Создадим?
-/*	if (manager_db.count_db == 0) {
-		db_manager_add(DB_DAFAULT_NAME);
-		printf(DB_DEFAULT_CREATE);
-		return;
-	}
-	else { */
+
 		char * items[MAX_DB+1];
 		uint8_t i;
 		const char *baseinsert = { "Добавить базу. \n" };
@@ -69,8 +63,6 @@ void db_manager(void) {
 		for (uint8_t m = 0; m <= i; m++) {
 			free(items[m]);
 		}
-
-	//  }
 
 	clear (COUNT_LINE_VELCOM, 0);
 }
@@ -141,14 +133,19 @@ void write_file() {
 	// Проверим наличие базы. 
 	if (active_db == NULL) { db_manager(); }
 
-	char filename[100];
 	rn_t count = 0;
-	printf("Input filename: ");
-	mfgets(filename, 100, stdin);
+
+	char file_name[FILE_NAME_SIZE];
+	printf("Введите имя файла[%s]: ", DEFAULT_WRITE_FILE);
+	mfgets(file_name, FILE_NAME_SIZE, stdin);
+
+	if (strcmp(file_name, "") == 0) {
+		strcpy(file_name, DEFAULT_WRITE_FILE);
+	}
 	
 	FILE *fp;
 	record_t rec;
-	fp = fopen(filename, "w");
+	fp = fopen(file_name, "w");
 
 	if (fp != NULL) {
 
@@ -180,10 +177,21 @@ void read_file() {
 
 	rn_t count = 0;
 	FILE *fp;
-	fp = fopen(filename, "r");
+	char file_name[FILE_NAME_SIZE];
+	printf("Введите имя файла[%s]: ", DEFAULT_READ_FILE);
+	mfgets(file_name, FILE_NAME_SIZE, stdin);
+
+
+	fp = fopen(file_name, "r");
 	if (fp == NULL) {
-		printf("File not found!");
-		return;
+		printf("File %s not found! Read default file: %s \n", file_name, DEFAULT_READ_FILE);
+		fp = fopen(DEFAULT_READ_FILE, "r");
+		
+		if (fp == NULL) {
+			printf("Default file is not fount! \n");
+			return;
+		}
+		
 	}
 
 	char buffer[STR_SIZE];

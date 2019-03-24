@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <stdint.h>
-#include <locale.h>
 #include "../include/menu.h"
 #include "../include/record.h"
 
@@ -8,7 +7,8 @@
 void main(void) {	
 
 	// переходим в консоли на русский язык
-	setlocale(LC_ALL, "Rus");
+
+	system("chcp 1251 > nul");
 
 	printf(VELCOM);
 

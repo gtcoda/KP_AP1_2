@@ -19,11 +19,17 @@
 #define VIEW_HEAD "№  | Surname | Height | Weight \n\r"
 #define SEPARATOR ":"
 
-#define RECORD_FILES "../text2.txt"
+#define RECORD_FILES "text2.txt"
+#define DEFAULT_READ_FILE "text_in.txt"
+#define DEFAULT_WRITE_FILE "text_out.txt"
+
+
 #define DB_SIZE 50
 #define NAME_SIZE 40
 #define STR_SIZE 100 // максимальная длинна вводимой строки
 #define MAX_DB 5
+
+#define FILE_NAME_SIZE NAME_SIZE
 
 typedef struct {
 	char name_db[NAME_SIZE];

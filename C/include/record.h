@@ -16,7 +16,8 @@
 #define DB_DAFAULT_NAME "default"
 #define DB_DEFAULT_CREATE "CREATE DB " DB_DAFAULT_NAME
 
-#define VIEW_HEAD "¹  | Surname | Height | Weight \n\r"
+#define VIEW_HEAD "¹  | Surname	| Height	| Weight \n\r"
+#define VIEW_BODY "%-2u | %-10s	| %-10u	| %-10.2f \n\r"
 #define SEPARATOR ":"
 
 #define RECORD_FILES "text2.txt"

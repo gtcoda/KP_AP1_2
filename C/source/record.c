@@ -9,6 +9,8 @@ void entry_record(record_t * note);
 char * trim(char *s);
 rn_t view_record_choice(void);
 
+void view_record_diap_height(void);
+void view_record_diap_weight(void);
 
 
 struct {
@@ -110,9 +112,9 @@ void record_parsing(char * string) {
 
 	for (uint8_t i = 0; m != NULL; i++) {
 		switch (i) {
-		case 0: strcpy(surname, m); break;
-		case 1: strcpy(height, m); break;
-		case 2: strcpy(weight, m); break;
+		case 0: strcpy_s(surname, NAME_SIZE, m); break;
+		case 1: strcpy_s(height, NAME_SIZE, m); break;
+		case 2: strcpy_s(weight, NAME_SIZE, m); break;
 		}
 		m = strtok(NULL, ":");
 	}
@@ -181,18 +183,25 @@ void read_file() {
 	printf("Введите имя файла[%s]: ", DEFAULT_READ_FILE);
 	mfgets(file_name, FILE_NAME_SIZE, stdin);
 
-
-	fp = fopen(file_name, "r");
-	if (fp == NULL) {
-		printf("File %s not found! Read default file: %s \n", file_name, DEFAULT_READ_FILE);
+	if (strcmp (file_name, "") == 0 ) {
+		printf("Read default file: %s \n", DEFAULT_READ_FILE);
 		fp = fopen(DEFAULT_READ_FILE, "r");
-		
+
 		if (fp == NULL) {
 			printf("Default file is not fount! \n");
 			return;
 		}
-		
+
 	}
+	else {
+		fp = fopen(file_name, "r");
+		if (fp == NULL) {
+			printf("File %s is not fount! \n", file_name);
+			return;
+		}
+	}
+
+
 
 	char buffer[STR_SIZE];
 	while (fgets(buffer, STR_SIZE, fp) != NULL) {
@@ -239,7 +248,7 @@ void view_record() {
 			record_t rec;
 			read_db(i, &rec, active_db);
 
-			printf(" %-2u |%-10s| %-10u| %-10.2f \n\r", i, rec.surname, rec.height, rec.weight);
+			printf(VIEW_BODY, i, rec.surname, rec.height, rec.weight);
 		}
 	}
 }
@@ -250,6 +259,12 @@ void view_record() {
 void replace(void) {
 	// Проверим наличие базы. 
 	if (active_db == NULL) { db_manager(); }
+	// Проверим есть ли в базе записи.
+	if (amount_db(active_db) == 0) {
+		add_record();
+		return;
+	}
+
 	rn_t number = 0;
 
 	number = view_record_choice();
@@ -269,6 +284,12 @@ void replace(void) {
 void insert(void) {
 	// Проверим наличие базы. 
 	if (active_db == NULL) { db_manager(); }
+
+	// Проверим есть ли в базе записи.
+	if (amount_db(active_db) == 0) {
+		add_record();
+		return;
+	}
 	rn_t number = 0;
 	insert_t specifier;
 	record_t record;
@@ -299,6 +320,11 @@ void insert(void) {
 void delite(void) {
 	// Проверим наличие базы. 
 	if (active_db == NULL) { db_manager(); }
+
+	if (amount_db(active_db) == 0) {
+		printf(MESSAGE_NO_DELITE);
+		return;
+	}
 
 	rn_t number = 0;
 	insert_t specifier;
@@ -379,12 +405,8 @@ void sort(void) {
 Выводит на экран базу данных в диапазоне с вичисление минимума максимума и среднего. 
 */
 void view_record_diap(void){
-	rn_t begin, end;
-	rn_t count = 0;
-	float midle = 0;
 	sort_t column;
-	char str[NAME_SIZE];
-	
+
 	printf("Выберите поле:\n");
 	char * items[] = {	MENU_HEIGHT,
 						MENU_WEIGHT
@@ -393,48 +415,125 @@ void view_record_diap(void){
 	column = menu(0, LINE_WORK + 1, items, sizeof(items) / sizeof(items[0]));
 	clear(0, LINE_WORK);
 	
-	
-	
+	if (items[column] == MENU_HEIGHT) {
+		view_record_diap_height();
+	}
+	else if (items[column] == MENU_WEIGHT) {
+		view_record_diap_weight();
+	}
+}
+
+void view_record_diap_height(void) {
+	rn_t begin, end, count = 0, min=0, max=0;
+	uint32_t midle = 0;
+	char str[NAME_SIZE];
+
 	printf("Введите диапазон.\n");
 	printf("Начало диапазона: ");
 	mfgets(str, sizeof(str), stdin);
 	begin = (uint16_t)strtol(str, NULL, 10);
-	
+
 	printf("Конец диапазона: ");
 	mfgets(str, sizeof(str), stdin);
 	end = (uint16_t)strtol(str, NULL, 10);
 
 
+
 	for (rn_t i = 0; i < amount_db(active_db); i++) {
-		record_t rec;
+		record_t rec, rec_min_max;
 		read_db(i, &rec, active_db);
-		switch (column){
-			case 0 :{
-				if(rec.height<end && rec.height>begin){
-					midle = midle + rec.height;
-					count++;
-					printf("%-2u |%-10s| %-10u| %-10.2f \n\r", i, rec.surname, rec.height, rec.weight);
-				}
-			}
-			
-			case 1 :{
-				if(rec.weight<end && rec.weight>begin){
-					midle =+ rec.weight;
-					count++;
-					printf("%-2u |%-10s| %-10u| %-10.2f \n\r", i, rec.surname, rec.height, rec.weight);
-				}
-			} 
-			
+
+		if (rec.height >= begin && rec.height <= end) {
+			midle = midle + rec.height;
+			count++;
+			printf(VIEW_BODY, i, rec.surname, rec.height, rec.weight);
 		}
-		
+
+		// Проверяем на минимум.
+		read_db(min, &rec_min_max, active_db);
+		if (rec.height < rec_min_max.height ) {
+			min = i;
+		}
+
+		// Проверяем на максимум.
+		read_db(max, &rec_min_max, active_db);
+		if (rec.height > rec_min_max.height) {
+			max = i;
+		}
+
+	}
+
+	if (count != 0) {
+		midle = midle / count;
 	}
 	
-	midle = midle / count;
+	record_t rec_min, rec_max;
+	printf("Среднее по полю [HEIGHT]: %d \n", midle);
 
-	printf("Среднее по полю [%s]: .0%f \n", items[column], midle);
+	printf("Минимальное по полю [HEIGHT]: \n");
+	read_db(min, &rec_min, active_db);
+	printf(VIEW_BODY, min, rec_min.surname, rec_min.height, rec_min.weight);
 
+	printf("Максимальное по полю [HEIGHT]: \n");
+	read_db(max, &rec_max, active_db);
+	printf(VIEW_BODY, max, rec_max.surname, rec_max.height, rec_max.weight);
 }
 
+void view_record_diap_weight(void) {
+
+	rn_t count = 0, min = 0, max = 0;
+	float begin = 0, end = 0, midle = 0;
+	char str[NAME_SIZE];
+
+	printf("Введите диапазон.\n");
+	printf("Начало диапазона: ");
+	mfgets(str, sizeof(str), stdin);
+	begin = strtof(str, NULL);
+
+	printf("Конец диапазона: ");
+	mfgets(str, sizeof(str), stdin);
+	end = strtof(str, NULL);
+
+
+
+	for (rn_t i = 0; i < amount_db(active_db); i++) {
+		record_t rec, rec_min_max;
+		read_db(i, &rec, active_db);
+
+		if (rec.weight >= begin && rec.weight <= end) {
+			midle = midle + rec.weight;
+			count++;
+			printf(VIEW_BODY, i, rec.surname, rec.height, rec.weight);
+		}
+
+		// Проверяем на минимум.
+		read_db(min, &rec_min_max, active_db);
+		if (rec.weight < rec_min_max.weight) {
+			min = i;
+		}
+
+		// Проверяем на максимум.
+		read_db(max, &rec_min_max, active_db);
+		if (rec.weight > rec_min_max.weight) {
+			max = i;
+		}
+
+	}
+
+	if (count != 0) {
+		midle = midle / count;
+	}
+	record_t rec_min, rec_max;
+	printf("Среднее по полю [WEIGHT]: %.2f \n", midle);
+
+	printf("Минимальное по полю [WEIGHT]: \n");
+	read_db(min, &rec_min, active_db);
+	printf(VIEW_BODY, min, rec_min.surname, rec_min.height, rec_min.weight);
+
+	printf("Максимальное по полю [WEIGHT]: \n");
+	read_db(max, &rec_max, active_db);
+	printf(VIEW_BODY, max, rec_max.surname, rec_max.height, rec_max.weight);
+}
 
 /*
 Выводит на экран базу данных с возможностью выбора элемента
@@ -503,10 +602,15 @@ char * trim(char *s) {
 
 char * mfgets(char * string, int num, FILE * filestream) {
 	char * res = fgets(string, NAME_SIZE, stdin);
+
 	char * ptr = NULL;
 	ptr = strchr(string, '\n');
 	if (ptr != NULL) {
 		*ptr = 0;
+	}
+	else {
+		// Чистим входные буферы. Пользователь мог ввести больше NAME_SIZE. Считае все до символа "\n"
+		do {} while (getchar() != '\n');
 	}
 	return res;
 }

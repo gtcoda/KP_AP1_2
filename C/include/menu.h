@@ -52,5 +52,5 @@ int menu(int x, int y, char* items[], int cnt);
 void clear(int X, int Y);
 void clear_line(int x, int cnt);
 
-void gotoxy(int x, int y);
+
 #endif

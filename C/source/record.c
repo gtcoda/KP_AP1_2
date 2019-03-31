@@ -523,6 +523,7 @@ void view_record_diap_height(void) {
 
 
 
+
 	for (rn_t i = 0, c = amount_db(active_db); i < c; i++) {
 		record_t rec, rec_min_max;
 		read_db(i, &rec, active_db);
@@ -554,18 +555,21 @@ void view_record_diap_height(void) {
 
 	if (count != 0) {
 		midle = midle / count;
-	}
 	
-	record_t rec_min, rec_max;
-	printf("Среднее по полю [HEIGHT]: %d \n", midle);
+		record_t rec_min, rec_max;
+		printf("Среднее по полю [HEIGHT]: %d \n", midle);
 
-	printf("Минимальное по полю [HEIGHT]: \n");
-	read_db(min, &rec_min, active_db);
-	printf(VIEW_BODY, min, rec_min.surname, rec_min.height, rec_min.weight);
+		printf("Минимальное по полю [HEIGHT]: \n");
+		read_db(min, &rec_min, active_db);
+		printf(VIEW_BODY, min, rec_min.surname, rec_min.height, rec_min.weight);
 
-	printf("Максимальное по полю [HEIGHT]: \n");
-	read_db(max, &rec_max, active_db);
-	printf(VIEW_BODY, max, rec_max.surname, rec_max.height, rec_max.weight);
+		printf("Максимальное по полю [HEIGHT]: \n");
+		read_db(max, &rec_max, active_db);
+		printf(VIEW_BODY, max, rec_max.surname, rec_max.height, rec_max.weight);
+	}
+	else{
+		printf("Нет записей входящих в диапазон [%u,%u] по полю [HEIGHT].", begin, end);
+	}
 }
 
 void view_record_diap_weight(void) {
@@ -616,7 +620,7 @@ void view_record_diap_weight(void) {
 
 	if (count != 0) {
 		midle = midle / count;
-	}
+	
 	record_t rec_min, rec_max;
 	printf("Среднее по полю [WEIGHT]: %.2f \n", midle);
 
@@ -627,6 +631,10 @@ void view_record_diap_weight(void) {
 	printf("Максимальное по полю [WEIGHT]: \n");
 	read_db(max, &rec_max, active_db);
 	printf(VIEW_BODY, max, rec_max.surname, rec_max.height, rec_max.weight);
+	}
+	else{
+		printf("Нет записей входящих в диапазон [%f,%f] по полю [WEIGHT].", begin, end);
+	}
 }
 
 /*

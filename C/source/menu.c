@@ -4,6 +4,7 @@
 
 static void textcolor(short f, short b);
 static char getch();
+void gotoxy(int x, int y);
 
 
 // X - столбец, Y - строка.

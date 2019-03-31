@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <windows.h>
 
-#define VELCOM "KP_AP1_2 \n\n"
+#define VELCOM "	ќбработка массивов записей. \n\r	KP_AP1_2 \n\r "
 
 #define COUNT_LINE_VELCOM 2 //  оличество строк занимаемое приветствием.
 #define COLUMN_LINE_LEVCOM 0 // Ќачальна€ колонка строк с приветствием.

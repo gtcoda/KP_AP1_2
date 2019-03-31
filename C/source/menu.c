@@ -97,7 +97,10 @@ int menu(int x, int y, char* items[], int cnt) {
 		printf("%s", items[i]);
 		gotoxy(x, y + i); textcolor(COLOR_FG, COLOR_BG); //Предотвращение изменения цвета консоли при изменении размера окна.
 	}
-	textcolor(COLOR_FG, COLOR_BG);
+	
+	// Убрать рамку при неактивном меню.
+	gotoxy(x, y + i); textcolor(COLOR_FG, COLOR_BG);
+	printf("%s", items[i]);
 
 	return i;
 }

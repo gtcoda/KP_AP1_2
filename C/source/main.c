@@ -9,7 +9,6 @@ void main(void) {
 	// переходим в консоли на русский язык
 
 	system("chcp 1251 > nul");
-
 	printf(VELCOM);
 
 	char* items[] = {
@@ -21,7 +20,6 @@ void main(void) {
 					MENU_REPLACE,
 					MENU_INSERT,
 					MENU_DELITE,
-					MENU_AMOUNT,
 					MENU_DIAP,
 					MENU_SORT,
 					MENU_EXIT
@@ -78,10 +76,6 @@ void main(void) {
 		}
 		else if (!strcmp(items[i], MENU_VIEW)) {
 			view_record();
-			continue;
-		}
-		else if (!strcmp(items[i], MENU_AMOUNT)) {
-			amount();
 			continue;
 		}
 		else if (!strcmp(items[i], MENU_SORT)) {

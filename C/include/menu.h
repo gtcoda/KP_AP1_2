@@ -15,7 +15,7 @@
 #define COUNT_LINE_DB_ACTIVE 3 // Количество строк занимаемое именем активной базы.
 #define COLUMN_LINE_DB_ACTIVE 0 // Начальная колонка строк с именем активной базы. 
 
-#define COUNT_LINE_MENU 13 // Количество строк занятых менюшкой.
+#define COUNT_LINE_MENU 12 // Количество строк занятых менюшкой.
 #define COLUMN_LINE_MENU 1 // Начальная колонка строк меню.
 
 #define DB_ACTIVE_WORK (COUNT_LINE_VELCOM) // Позиция занимаемая именем активной базы

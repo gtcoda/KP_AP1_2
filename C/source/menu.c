@@ -78,6 +78,7 @@ int menu(int x, int y, char* items[], int cnt) {
 	i = 0;
 	gotoxy(x, y); textcolor(COLOR_BG, COLOR_FG);
 	printf("%s", items[i]);
+	gotoxy(x, y); textcolor(COLOR_FG, COLOR_BG); // ѕредотвращение изменени€ цвета консоли при изменении размера окна.
 
 	while (((ch = getch()) != EOF) && (ch != VK_RETURN)) {
 		gotoxy(x, y + i); textcolor(COLOR_FG, COLOR_BG);
@@ -94,6 +95,7 @@ int menu(int x, int y, char* items[], int cnt) {
 		}
 		gotoxy(x, y + i); textcolor(COLOR_BG, COLOR_FG);
 		printf("%s", items[i]);
+		gotoxy(x, y + i); textcolor(COLOR_FG, COLOR_BG); //ѕредотвращение изменени€ цвета консоли при изменении размера окна.
 	}
 	textcolor(COLOR_FG, COLOR_BG);
 

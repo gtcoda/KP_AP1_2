@@ -104,6 +104,9 @@ void db_manager_active_name(char * db_name) {
 	return;
 }
 
+/*
+Производит синтаксический анализ строки. И разделение ее в соответствии с алгоритмом.
+*/
 void record_parsing(char * string) {
 	char surname[NAME_SIZE];
 	char height[NAME_SIZE];

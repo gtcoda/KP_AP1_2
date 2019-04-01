@@ -7,7 +7,6 @@
 void main(void) {	
 
 	// переходим в консоли на русский язык
-
 	system("chcp 1251 > nul");
 	printf(VELCOM);
 

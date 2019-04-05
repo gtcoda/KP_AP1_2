@@ -98,7 +98,7 @@ uint8_t insert_db_arr(record_t note, record_db_a * base, rn_t number, insert_t s
 	}
 	
 	// На место выбраного элемента
-	if (specifier == INSTEAD) {
+	if ( (specifier == INSTEAD) || (specifier == ONE) ) {
 		if (number < base->pointer) {
 			strcpy(base->db[number].surname, note.surname);
 			base->db[number].height = note.height;

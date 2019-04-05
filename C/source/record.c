@@ -363,13 +363,14 @@ void insert(void) {
 	
 	printf("Select position: \n");
 		
-	char * items[2] = {	"0 - Перед выбраным.",
-						"1 - После выбраного."
+	char * items[] = {	"0 - Перед выбраным.",
+						"1 - После выбраного.",
+						"2 - Замена выбраного."
 	};
 	
 	specifier = menu(1, LINE_WORK + 1, items, sizeof(items) / sizeof(items[0]));
 	clear(1, LINE_WORK);
-
+	
 
 	entry_record(&record);
 
@@ -698,7 +699,9 @@ char * trim(char *s) {
 */
 void strncpy_s_m(char * dst, size_t len, char * src){
 	strncpy(dst, src, len);
-	dst[len - 1] = "\0";
+	// При использовании "\0" происходит warning: cast from pointer to integer of different size
+	// Заменим на вариант без warning. "\0" == 0
+	dst[len - 1] = 0;
 }
 
 

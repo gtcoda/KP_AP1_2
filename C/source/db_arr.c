@@ -179,51 +179,17 @@ uint8_t sort_bubble_db_arr(record_db_a * base, sort_t column) {
 		flag = 0;
 		
 		for (rn_t i = 0; i < (base->pointer - 1) ; i++) {
-			// Сортируем по полю "HEIGHT"
-			if ( column == HEIGHT && 
-				 base->db[i].height > base->db[i + 1].height ) {
-					 
-				record_t A;
+			if( (column == HEIGHT && base->db[i].height > base->db[i + 1].height) ||
+				(column == WEIGHT && base->db[i].weight > base->db[i + 1].weight) ||
+				(column == SURNAME && strcmp(base->db[i].surname, base->db[i + 1].surname) > 0) ){
 				
+				record_t A;
 				A = base->db[i];
 				base->db[i] = base->db[i+1];
 				base->db[i+1] = A;
-
 				flag = 1;
 				
 			}
-
-			// Сортируем по полю "WEIGHT"
-			if ( column == WEIGHT && 
-				 base->db[i].weight > base->db[i + 1].weight ) {
-				
-				record_t A;
-				
-				A = base->db[i];
-				base->db[i] = base->db[i+1];
-				base->db[i+1] = A;
-				
-				
-				flag = 1;
-				
-			}
-
-			// Сортируем по полю "SURNAME"
-			if ( column == SURNAME && 
-				 strcmp(base->db[i].surname, base->db[i + 1].surname) > 0  ) {
-
-				record_t A;
-				
-				A = base->db[i];
-				base->db[i] = base->db[i+1];
-				base->db[i+1] = A;
-
-				flag = 1;
-				
-				
-			}
-			
-
 		} 
 
 
